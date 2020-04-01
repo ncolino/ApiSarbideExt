@@ -1,0 +1,828 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Python Flask API with Swagger UI",
+    "version": "1.0.1",
+    "title": "ApiSarbideExt",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [    
+    {
+      "name": "Asset",
+      "description": "Example API for requesting and return asset requests"
+    }
+    ,{
+      "name": "ExtMedia",
+      "description": "Example API for requesting and return extmedia requests"
+    }
+    ,{
+      "name": "Book Request",
+      "description": "Example API for requesting and return book requests"
+    }
+  ],
+  "paths": {
+    "/Asset/ByProject/{tag}/{llamadopor}/{uti}/{project_id}": {
+      "parameters": [
+        {
+          "name": "tag",
+          "in": "path",
+          "required": true,
+          "description": "tag",
+          "type": "string"
+        }
+        ,{
+          "name": "llamadopor",
+          "in": "path",
+          "required": true,
+          "description": "llamadopor",
+          "type": "string"
+        }
+        ,{
+          "name": "uti",
+          "in": "path",
+          "required": true,
+          "description": "uti",
+          "type": "string"
+        }
+        ,{
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "description": "project_id",
+          "type": "string"
+        }
+      ]
+      ,"get": {
+        "tags": [
+          "Asset"
+        ],
+        "summary": "Retorna la lista de assets para un proyecto dado",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "description": "tag",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "llamadopor",
+            "required": true,
+            "description": "llamadopor",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "uti",
+            "required": true,
+            "description": "uti",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "description": "project_id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK, Assets response",
+            "type": "array"  
+              ,"items": {              
+                "type" : "integer"
+                ,"format" : "int32"                             
+              }                                      
+          }        
+          ,"400": {
+            "description": "Failed. Misunderstood Request."
+          }
+          ,"404": {
+            "description": "Failed. Asset request not found."
+          }
+        }
+      }     
+    }
+    ,"/ExtMedia/Asset/{tag}/{llamadopor}/{uti}/{asset_id}/{txartela}": {
+      "parameters": [
+        {
+          "name": "tag",
+          "in": "path",
+          "required": true,
+          "description": "tag",
+          "type": "string"
+        }
+        ,{
+          "name": "llamadopor",
+          "in": "path",
+          "required": true,
+          "description": "llamadopor",
+          "type": "string"
+        }
+        ,{
+          "name": "uti",
+          "in": "path",
+          "required": true,
+          "description": "uti",
+          "type": "string"
+        }
+        ,{
+          "name": "asset_id",
+          "in": "path",
+          "required": true,
+          "description": "asset_id",
+          "type": "string"
+        }
+        ,{
+          "name": "txartela",
+          "in": "path",
+          "required": true,
+          "description": "txartela",
+          "type": "string"
+        }
+      ]
+      ,"get": {
+        "tags": [
+          "ExtMedia"
+        ],
+        "summary": "Lectura del extmedia dado el asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "description": "tag",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "llamadopor",
+            "required": true,
+            "description": "llamadopor",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "uti",
+            "required": true,
+            "description": "uti",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "description": "asset_id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "txartela",
+            "required": true,
+            "description": "txartela",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/extmedia"
+            }
+          }      
+          ,"400": {
+            "description": "Failed. Misunderstood Request."
+          }
+          ,"404": {
+            "description": "Failed. ExtMedia request not found."
+          }
+        }
+      }     
+    }
+    ,"/ExtMedia/Asset/full/{tag}/{llamadopor}/{uti}/{asset_id}/{txartela}": {
+      "parameters": [
+        {
+          "name": "tag",
+          "in": "path",
+          "required": true,
+          "description": "tag",
+          "type": "string"
+        }
+        ,{
+          "name": "llamadopor",
+          "in": "path",
+          "required": true,
+          "description": "llamadopor",
+          "type": "string"
+        }
+        ,{
+          "name": "uti",
+          "in": "path",
+          "required": true,
+          "description": "uti",
+          "type": "string"
+        }
+        ,{
+          "name": "asset_id",
+          "in": "path",
+          "required": true,
+          "description": "asset_id",
+          "type": "string"
+        }
+        ,{
+          "name": "txartela",
+          "in": "path",
+          "required": true,
+          "description": "txartela",
+          "type": "string"
+        }
+      ]
+      ,"get": {
+        "tags": [
+          "ExtMedia"
+        ],
+        "summary": "Lectura de toda la metadata de extmedia dado el asset",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "description": "tag",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "llamadopor",
+            "required": true,
+            "description": "llamadopor",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "uti",
+            "required": true,
+            "description": "uti",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "description": "asset_id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "txartela",
+            "required": true,
+            "description": "txartela",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/extmediafull"
+            }
+          }      
+          ,"400": {
+            "description": "Failed. Misunderstood Request."
+          }
+          ,"404": {
+            "description": "Failed. ExtMedia request not found."
+          }
+        }
+      }     
+    }
+    ,"/request": {
+      "get": {
+        "tags": [
+          "Book Request"
+        ],
+        "summary": "Returns bookRequests",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/bookRequests"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Book Request"
+        ],
+        "summary": "Create a new book request system",
+        "requestBody": {
+          "description": "Book Request Post Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bookRequestPostBody"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      }
+    }
+    ,"/request/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of the cat that we want to match",
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Book Request"
+        ],
+        "summary": "Get book request with given ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Book Request id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/bookRequest"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Book request not found."
+          }
+        }
+      },
+      "put": {
+        "summary": "edit a book request by ID",
+        "tags": [
+          "Book Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Book Request id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Book Request Object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/bookRequest"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/bookRequest"
+            }
+          },
+          "400": {
+            "description": "Failed. Bad post data."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Book Request by ID",
+        "tags": [
+          "Book Request"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Book Request Id",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "400": {
+            "description": "Failed. Misunderstood Request."
+          },
+          "404": {
+            "description": "Failed. Book Request not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "extmedia": {
+        "type": "object"             
+        ,"properties" : {
+          "ID_EXT_MEDIA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "identificador del ExtMedia" 
+          }
+          ,"ID" : {
+            "type" : "string"                                 
+            ,"description": "ID" 
+          }
+          ,"ASSET_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"                                
+            ,"description": "identificador del asset" 
+          }
+          ,"ASSET_VALUE" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "fecha de valor del asset" 
+          }
+          ,"FORMATO1_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "FORMATO1_ID" 
+          }
+          ,"FORMATO2_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "FORMATO2_ID" 
+          }
+          ,"CONTENIDO1_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CONTENIDO1_ID" 
+          }
+          ,"CONTENIDO2_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CONTENIDO2_ID" 
+          }
+          ,"TITLE_10" : {
+            "type" : "string"                                 
+            ,"description": "título" 
+          }
+          ,"SCRIPT_DESCRIPTION" : {
+            "type" : "string"                                 
+            ,"description": "SCRIPT_DESCRIPTION" 
+          }
+          ,"REMARKS" : {
+            "type" : "string"                                 
+            ,"description": "REMARKS" 
+          }
+          ,"NESCALETA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "NESCALETA" 
+          }
+          ,"NNOTICIA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "NNOTICIA" 
+          }
+          ,"ANYO_ESC" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "ANYO_ESC" 
+          }
+          ,"NOMBRE_PROG" : {
+            "type" : "string"                                 
+            ,"description": "NOMBRE_PROG" 
+          }
+          ,"OFF" : {
+            "type" : "string"                                 
+            ,"description": "OFF" 
+          }
+          ,"SYNOPSIS_SAR" : {
+            "type" : "string"                                 
+            ,"description": "SYNOPSIS_SAR" 
+          }
+          ,"PRODUCT_CODE" : {
+            "type" : "string"                                 
+            ,"description": "PRODUCT_CODE" 
+          }
+          ,"CHAPTER" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CHAPTER" 
+          } 
+          ,"MEDIA_UTI_CRE" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "MEDIA_UTI_CRE" 
+          }
+          ,"MEDIA_UTI_MOD" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "MEDIA_UTI_MOD" 
+          } 
+          ,"MEDIA_CRE" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "MEDIA_CRE" 
+          }
+          ,"MEDIA_MOD" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "MEDIA_MOD" 
+          }                                                    
+          ,"ID_EXT_MEDIA_TYPE" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "ID_EXT_MEDIA_TYPE" 
+          }
+          ,"EXT_MEDIA_TYPE" : {
+            "type" : "string"                                 
+            ,"description": "EXT_MEDIA_TYPE" 
+          }                    
+        }
+      } 
+      ,"extmediafull": {
+        "type": "object"                 
+        ,"properties" : {
+          "ID_EXT_MEDIA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "identificador del ExtMedia" 
+          }
+          ,"ID" : {
+            "type" : "string"                                 
+            ,"description": "ID" 
+          }
+          ,"ASSET_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"                                
+            ,"description": "identificador del asset" 
+          }
+          ,"ASSET_VALUE" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "fecha de valor del asset" 
+          }
+          ,"FORMATO1_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "FORMATO1_ID" 
+          }
+          ,"FORMATO2_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "FORMATO2_ID" 
+          }
+          ,"CONTENIDO1_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CONTENIDO1_ID" 
+          }
+          ,"CONTENIDO2_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CONTENIDO2_ID" 
+          }
+          ,"TITLE_10" : {
+            "type" : "string"                                 
+            ,"description": "título" 
+          }
+          ,"SCRIPT_DESCRIPTION" : {
+            "type" : "string"                                 
+            ,"description": "SCRIPT_DESCRIPTION" 
+          }
+          ,"REMARKS" : {
+            "type" : "string"                                 
+            ,"description": "REMARKS" 
+          }
+          ,"NESCALETA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "NESCALETA" 
+          }
+          ,"NNOTICIA" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "NNOTICIA" 
+          }
+          ,"ANYO_ESC" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "ANYO_ESC" 
+          }
+          ,"NOMBRE_PROG" : {
+            "type" : "string"                                 
+            ,"description": "NOMBRE_PROG" 
+          }
+          ,"OFF" : {
+            "type" : "string"                                 
+            ,"description": "OFF" 
+          }
+          ,"SYNOPSIS_SAR" : {
+            "type" : "string"                                 
+            ,"description": "SYNOPSIS_SAR" 
+          }
+          ,"PRODUCT_CODE" : {
+            "type" : "string"                                 
+            ,"description": "PRODUCT_CODE" 
+          }
+          ,"CHAPTER" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "CHAPTER" 
+          } 
+          ,"MEDIA_UTI_CRE" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "MEDIA_UTI_CRE" 
+          }
+          ,"MEDIA_UTI_MOD" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "MEDIA_UTI_MOD" 
+          } 
+          ,"MEDIA_CRE" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "MEDIA_CRE" 
+          }
+          ,"MEDIA_MOD" : {
+            "type" : "string"
+            ,"format" : "date-time"                                 
+            ,"description": "MEDIA_MOD" 
+          }                                                    
+          ,"ID_EXT_MEDIA_TYPE" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "ID_EXT_MEDIA_TYPE" 
+          }
+          ,"EXT_MEDIA_TYPE" : {
+            "type" : "string"                                 
+            ,"description": "EXT_MEDIA_TYPE" 
+          }
+          ,"MP4PMD_URL" : {
+            "type" : "string"                                 
+            ,"description": "MP4PMD_URL" 
+          }
+          ,"WEBMPMD_URL" : {
+            "type" : "string"                                 
+            ,"description": "WEBMPMD_URL" 
+          }
+          ,"HLSRENDITION_URL" : {
+            "type" : "string"                                 
+            ,"description": "HLSRENDITION_URL" 
+          }
+          ,"THUMBNAIL_URL" : {
+            "type" : "string"                                 
+            ,"description": "THUMBNAIL_URL" 
+          }
+          ,"SPRITE_URL" : {
+            "type" : "string"                                 
+            ,"description": "SPRITE_URL" 
+          }                   
+        }
+      }    
+      ,"id": {
+        "properties": {
+          "uuid": {
+            "type": "string"
+          }
+        }
+      }
+      ,"bookRequestPostBody": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      }
+      ,"bookRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "number"
+          }
+        }
+      }
+      ,"bookRequests": {
+        "type": "object",
+        "properties": {
+          "bookRequest": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/bookRequest"
+            }
+          }
+        }
+      }
+      ,"ErrorModel": {
+        "id": "errorModel"       
+        ,"required" : [ "code", "message" ]
+        ,"properties" : {
+          "code" : {
+            "type" : "integer"
+            ,"format" : "int32"
+            ,"description": "código de error" 
+          }
+          ,"message" : {
+            "type" : "string"
+            ,"description": "mensaje de error"    
+          }
+        }
+    }
+    }
+  }
+}

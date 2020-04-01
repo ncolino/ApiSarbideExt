@@ -1,0 +1,12 @@
+#General settings
+APP_PORT = 5000
+LOG_LEVEL = 10   # Valores --> DEBUG: 10 | INFO: 20 | WARNING: 30 | ERROR: 40 | CRITICAL: 50
+LOG_FILENAME = 'Logfile'
+
+
+#MySQL settings
+MYSQL_DATABASE_USER = 'ext1'
+MYSQL_DATABASE_PASSWORD = 'User@Ext1'
+MYSQL_DATABASE_DB = 'externalweb'
+MYSQL_DATABASE_HOST = '10.114.159.153'
+
