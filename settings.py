@@ -1,6 +1,6 @@
 #General settings
 APP_PORT = 5000
-LOG_LEVEL = 10   # Valores --> DEBUG: 10 | INFO: 20 | WARNING: 30 | ERROR: 40 | CRITICAL: 50
+LOG_LEVEL = 20   # Valores --> DEBUG: 10 | INFO: 20 | WARNING: 30 | ERROR: 40 | CRITICAL: 50
 LOG_FILENAME = 'Logfile'
 
 

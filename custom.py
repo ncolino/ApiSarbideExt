@@ -225,23 +225,23 @@ class Metodos:
         self.funciones = Funciones()            
 
     def funcion_GetAssetListByProjectId(self,_id):        
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetAssetListByProjectId - _id: ', _id), self.funciones._DEBUG)  
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetAssetListByProjectId - _id: ', _id), self.funciones._INFO)  
         db = Database()  
         asss = db.ConsultaAssetListByProjectId(_id)        
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetAssetListByProjectId - assets: ', str(asss)), self.funciones._DEBUG)    
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetAssetListByProjectId - assets: ', str(asss)), self.funciones._INFO)    
         return asss
         
     def funcion_GetExtMediaByAssetId(self,_id):
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaByAssetId - _id: ', _id), self.funciones._DEBUG)
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaByAssetId - _id: ', _id), self.funciones._INFO)
         db = Database()  
         asss = db.ConsultaExtMediaByAssetId(_id)        
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaByAssetId - ext_media: ', str(asss)), self.funciones._DEBUG)  
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
     def funcion_GetExtMediaFullByAssetId(self,_id):
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id), self.funciones._DEBUG)  
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id), self.funciones._INFO)  
         db = Database()  
         asss = db.ConsultaExtMediaFullByAssetId(_id)        
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._DEBUG)  
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
         

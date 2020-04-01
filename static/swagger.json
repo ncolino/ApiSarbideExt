@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Python Flask API with Swagger UI",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "title": "ApiSarbideExt",
     "license": {
       "name": "MIT",
@@ -22,11 +22,7 @@
     ,{
       "name": "ExtMedia",
       "description": "Example API for requesting and return extmedia requests"
-    }
-    ,{
-      "name": "Book Request",
-      "description": "Example API for requesting and return book requests"
-    }
+    }    
   ],
   "paths": {
     "/Asset/ByProject/{tag}/{llamadopor}/{uti}/{project_id}": {
@@ -111,6 +107,9 @@
                 "type" : "integer"
                 ,"format" : "int32"                             
               }                                      
+          }
+          ,"204": {
+            "description": "No Asset response."
           }        
           ,"400": {
             "description": "Failed. Misunderstood Request."
@@ -216,8 +215,11 @@
             "description": "OK",
             "schema": {
               "$ref": "#/components/schemas/extmedia"
-            }
-          }      
+            }          
+          }  
+          ,"204": {
+            "description": "No ExtMedia response."
+          }    
           ,"400": {
             "description": "Failed. Misunderstood Request."
           }
@@ -323,6 +325,9 @@
             "schema": {
               "$ref": "#/components/schemas/extmediafull"
             }
+          }
+          ,"204": {
+            "description": "No ExtMedia response."
           }      
           ,"400": {
             "description": "Failed. Misunderstood Request."
@@ -332,169 +337,7 @@
           }
         }
       }     
-    }
-    ,"/request": {
-      "get": {
-        "tags": [
-          "Book Request"
-        ],
-        "summary": "Returns bookRequests",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/bookRequests"
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Book Request"
-        ],
-        "summary": "Create a new book request system",
-        "requestBody": {
-          "description": "Book Request Post Object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/bookRequestPostBody"
-              }
-            }
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "201": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/id"
-            }
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          }
-        }
-      }
-    }
-    ,"/request/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID of the cat that we want to match",
-          "type": "string"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Book Request"
-        ],
-        "summary": "Get book request with given ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Book Request id",
-            "schema": {
-              "$ref": "#/components/schemas/id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/bookRequest"
-            }
-          },
-          "400": {
-            "description": "Failed. Misunderstood Request."
-          },
-          "404": {
-            "description": "Failed. Book request not found."
-          }
-        }
-      },
-      "put": {
-        "summary": "edit a book request by ID",
-        "tags": [
-          "Book Request"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Book Request id",
-            "schema": {
-              "$ref": "#/components/schemas/id"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Book Request Object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/bookRequest"
-              }
-            }
-          }
-        },
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/bookRequest"
-            }
-          },
-          "400": {
-            "description": "Failed. Bad post data."
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Book Request by ID",
-        "tags": [
-          "Book Request"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "description": "Book Request Id",
-            "schema": {
-              "$ref": "#/components/schemas/id"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/components/schemas/id"
-            }
-          },
-          "400": {
-            "description": "Failed. Misunderstood Request."
-          },
-          "404": {
-            "description": "Failed. Book Request not found."
-          }
-        }
-      }
-    }
+    }    
   },
   "components": {
     "schemas": {
@@ -766,48 +609,7 @@
             "type": "string"
           }
         }
-      }
-      ,"bookRequestPostBody": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "format": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          }
-        }
-      }
-      ,"bookRequest": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "format": "string"
-          },
-          "email": {
-            "type": "string",
-            "format": "email"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "number"
-          }
-        }
-      }
-      ,"bookRequests": {
-        "type": "object",
-        "properties": {
-          "bookRequest": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/bookRequest"
-            }
-          }
-        }
-      }
+      }      
       ,"ErrorModel": {
         "id": "errorModel"       
         ,"required" : [ "code", "message" ]
