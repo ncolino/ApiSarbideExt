@@ -13,6 +13,15 @@ def get_blueprint():
     """Return the blueprint for the main app module"""
     return REQUEST_API
 
+@REQUEST_API.route('/', methods=['GET'])
+def PaginaInicio():
+    """Retorna la lista de assets para un proyecto dado    
+    @return: 200: Página de inicio \
+    with application/json mimetype.
+    @raise 404: if pagina inicio not found
+    """
+    
+    return 'Página de Inicio', 200
 
 @REQUEST_API.route('/Asset/ByProject/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>', methods=['GET'])
 def GetAssetListByProjectId(tag,llamadopor,uti,project_id):
