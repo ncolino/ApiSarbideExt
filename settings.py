@@ -5,8 +5,8 @@ LOG_FILENAME = 'Logfile'
 
 
 #MySQL settings
-MYSQL_DATABASE_USER = 'ext1'
-MYSQL_DATABASE_PASSWORD = 'User@Ext1'
-MYSQL_DATABASE_DB = 'externalweb'
-MYSQL_DATABASE_HOST = '10.114.159.153'
+MYSQL_DATABASE_USER = 'sarbide'
+MYSQL_DATABASE_PASSWORD = 'sarbide'
+MYSQL_DATABASE_DB = 'sarbide'
+MYSQL_DATABASE_HOST = 'database-1.cnewyb94s8sb.eu-west-1.rds.amazonaws.com -u sarbide'
 
