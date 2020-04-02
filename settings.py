@@ -8,5 +8,5 @@ LOG_FILENAME = 'Logfile'
 MYSQL_DATABASE_USER = 'sarbide'
 MYSQL_DATABASE_PASSWORD = 'sarbide'
 MYSQL_DATABASE_DB = 'sarbide'
-MYSQL_DATABASE_HOST = 'database-1.cnewyb94s8sb.eu-west-1.rds.amazonaws.com -u sarbide'
+MYSQL_DATABASE_HOST = 'database-1.cnewyb94s8sb.eu-west-1.rds.amazonaws.com'
 
