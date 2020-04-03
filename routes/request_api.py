@@ -7,6 +7,8 @@ from flask import jsonify, abort, request, Blueprint
 from custom import Database, Metodos
 
 from validate_email import validate_email
+import settings
+
 REQUEST_API = Blueprint('request_api', __name__)
 
 def get_blueprint():
@@ -21,7 +23,7 @@ def PaginaInicio():
     @raise 404: if pagina inicio not found
     """
     
-    return 'Página de Inicio', 200
+    return 'Página de Inicio ' + settings.APP_HOSTNAME, 200
 
 @REQUEST_API.route('/Asset/ByProject/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>', methods=['GET'])
 def GetAssetListByProjectId(tag,llamadopor,uti,project_id):

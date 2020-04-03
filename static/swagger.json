@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Python Flask API with Swagger UI",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "ApiSarbideExt",
     "license": {
       "name": "MIT",
