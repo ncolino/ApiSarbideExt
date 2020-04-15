@@ -220,6 +220,24 @@ class Database:
             break
         return result    
 
+
+    def ConsultaProjectListByUser(self,_email):        
+        self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01
+            FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS
+            WHERE PROJECT.PROJECT_ID = NODE_GROUPUSER_MEDIA.PROJECT_ID
+            AND NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
+            AND GROUPUSER_USERS.USER_ID = USERS.USER_ID 
+            AND USERS.E_CORREO =%s""", _email)
+        #results = self.cur.fetchall()  --> usamos mejor el cursor        
+        result = []
+        for row in self.cur:            
+            row['PROJECT_ID'] = row['PROJECT_ID'] 
+            row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01']) 
+            result = row
+            break
+        return result
+
+
 class Metodos:    
     def __init__(self):
         self.funciones = Funciones()            
@@ -244,4 +262,11 @@ class Metodos:
         asss = db.ConsultaExtMediaFullByAssetId(_id)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
+
+    def funcion_GetProjectListByUser(self,_email):        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetProjectListByUser - _email: ', _email), self.funciones._INFO)  
+        db = Database()  
+        proys = db.ConsultaProjectListByUser(_email)        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetProjectListByUser - proys: ', str(proys)), self.funciones._INFO)    
+        return proys
         

@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "description": "Python Flask API with Swagger UI",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "title": "ApiSarbideExt",
     "license": {
       "name": "MIT",
@@ -22,6 +22,10 @@
     ,{
       "name": "ExtMedia",
       "description": "Example API for requesting and return extmedia requests"
+    }
+    ,{
+      "name": "Project",
+      "description": "Example API for requesting and return project requests"
     }    
   ],
   "paths": {
@@ -337,7 +341,101 @@
           }
         }
       }     
-    }    
+    }
+    ,"/Project/User/{tag}/{llamadopor}/{uti}/{email}": {
+      "parameters": [
+        {
+          "name": "tag",
+          "in": "path",
+          "required": true,
+          "description": "tag",
+          "type": "string"
+        }
+        ,{
+          "name": "llamadopor",
+          "in": "path",
+          "required": true,
+          "description": "llamadopor",
+          "type": "string"
+        }
+        ,{
+          "name": "uti",
+          "in": "path",
+          "required": true,
+          "description": "uti",
+          "type": "string"
+        }
+        ,{
+          "name": "email",
+          "in": "path",
+          "required": true,
+          "description": "email",
+          "type": "string"
+        }
+      ]
+      ,"get": {
+        "tags": [
+          "Project"
+        ],
+        "summary": "Lectura de los projects a los que tiene acceso un usuario dado un email",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag",
+            "required": true,
+            "description": "tag",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "llamadopor",
+            "required": true,
+            "description": "llamadopor",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "uti",
+            "required": true,
+            "description": "uti",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+          ,{
+            "in": "path",
+            "name": "email",
+            "required": true,
+            "description": "email",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/project"
+            }          
+          }  
+          ,"204": {
+            "description": "No project response."
+          }    
+          ,"400": {
+            "description": "Failed. Misunderstood Request."
+          }
+          ,"404": {
+            "description": "Failed. project request not found."
+          }
+        }
+      }     
+    }
+        
   },
   "components": {
     "schemas": {
@@ -601,6 +699,20 @@
             "type" : "string"                                 
             ,"description": "SPRITE_URL" 
           }                   
+        }
+      }
+      ,"project": {
+        "type": "object"             
+        ,"properties" : {
+          "PROJECT_ID" : {
+            "type" : "integer"             
+            ,"format" : "int32"             
+            ,"description": "identificador del project" 
+          }
+          ,"TITLE_01" : {
+            "type" : "string"                                 
+            ,"description": "titulo del project" 
+          }
         }
       }    
       ,"id": {

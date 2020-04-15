@@ -7,6 +7,7 @@ from flask import jsonify, abort, request, Blueprint
 from custom import Database, Metodos
 
 from validate_email import validate_email
+
 import settings
 
 REQUEST_API = Blueprint('request_api', __name__)
@@ -14,6 +15,7 @@ REQUEST_API = Blueprint('request_api', __name__)
 def get_blueprint():
     """Return the blueprint for the main app module"""
     return REQUEST_API
+
 
 @REQUEST_API.route('/', methods=['GET'])
 def PaginaInicio():
@@ -24,6 +26,7 @@ def PaginaInicio():
     """
     
     return 'Página de Inicio ' + settings.APP_HOSTNAME, 200
+
 
 @REQUEST_API.route('/Asset/ByProject/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>', methods=['GET'])
 def GetAssetListByProjectId(tag,llamadopor,uti,project_id):
@@ -82,4 +85,23 @@ def GetExtMediaFullByAssetId(tag,llamadopor,uti,asset_id,txartela):
        #abort(404)
        return '', 204
     return jsonify(res)
+
+@REQUEST_API.route('/Project/User/<string:tag>/<string:llamadopor>/<string:uti>/<string:email>', methods=['GET'])
+def GetProjectListByUser(tag,llamadopor,uti,email):
+    """Lectura de todos los projects a los que tiene acceso un usuario
+    @param tag: the id
+    @param llamadopor: app que llama al metodo
+    @param uti: the id
+    @param email:email del user
+    @return: 200: a PROJECT_REQUESTS as a flask/response object \
+    with application/json mimetype.
+    @raise 404: if extmedia not found
+    """
+    fn = Metodos() 
+    res = fn.funcion_GetProjectListByUser(email)   
+    if len(res) == 0:
+       #abort(404)
+       return '', 204
+    return jsonify(res)
+
 
