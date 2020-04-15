@@ -232,9 +232,8 @@ class Database:
         result = []
         for row in self.cur:            
             row['PROJECT_ID'] = row['PROJECT_ID'] 
-            row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01']) 
-            result = row
-            break
+            row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01'])             
+            result.append(row)            
         return result
 
 
