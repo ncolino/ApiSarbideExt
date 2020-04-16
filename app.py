@@ -25,13 +25,6 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
 APP.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 ### end swagger specific ###
 
-
-# MySQL configurations
-#APP.config['MYSQL_DATABASE_USER'] = 'ext1'
-#APP.config['MYSQL_DATABASE_PASSWORD'] = 'User@Ext1'
-#APP.config['MYSQL_DATABASE_DB'] = 'externalweb'
-#APP.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
-
 APP.register_blueprint(request_api.get_blueprint())
 
 
@@ -57,6 +50,11 @@ def handle_404_error(_error):
 def handle_500_error(_error):
     """Return a http 500 error to client"""
     return make_response(jsonify({'error': 'Server error'}), 500)
+
+#@APP.after_request
+#def add_header(response):
+#    response.headers['X-Content-Type-Options'] = 'nosniff'    
+#    return response
 
 
 if __name__ == '__main__':

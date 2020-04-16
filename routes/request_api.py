@@ -3,6 +3,8 @@ import uuid
 from datetime import datetime, timedelta
 from flask import jsonify, abort, request, Blueprint
 
+import hashlib 
+import json
 
 from custom import Database, Metodos
 
@@ -16,6 +18,9 @@ def get_blueprint():
     """Return the blueprint for the main app module"""
     return REQUEST_API
 
+def generate_etag(data):  #data debe ser un string y estar hay que hacerle .encode()
+    """Generate an etag for some data."""
+    return hashlib.md5(data).hexdigest()
 
 @REQUEST_API.route('/', methods=['GET'])
 def PaginaInicio():
@@ -44,7 +49,12 @@ def GetAssetListByProjectId(tag,llamadopor,uti,project_id):
     if len(res) == 0:
        #abort(404)
        return '', 204
-    return jsonify(res)
+
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
+    
 
 
 @REQUEST_API.route('/ExtMedia/Asset/<string:tag>/<string:llamadopor>/<string:uti>/<string:asset_id>/<string:txartela>', methods=['GET'])
@@ -64,7 +74,13 @@ def GetExtMediaByAssetId(tag,llamadopor,uti,asset_id,txartela):
     if len(res) == 0:
        #abort(404)
        return '', 204
-    return jsonify(res)
+    
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
+    
+
 
 
 @REQUEST_API.route('/ExtMedia/Asset/full/<string:tag>/<string:llamadopor>/<string:uti>/<string:asset_id>/<string:txartela>', methods=['GET'])
@@ -84,7 +100,12 @@ def GetExtMediaFullByAssetId(tag,llamadopor,uti,asset_id,txartela):
     if len(res) == 0:
        #abort(404)
        return '', 204
-    return jsonify(res)
+    
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
+    
 
 @REQUEST_API.route('/Project/User/<string:tag>/<string:llamadopor>/<string:uti>/<string:email>', methods=['GET'])
 def GetProjectListByUser(tag,llamadopor,uti,email):
@@ -101,7 +122,11 @@ def GetProjectListByUser(tag,llamadopor,uti,email):
     res = fn.funcion_GetProjectListByUser(email)   
     if len(res) == 0:
        #abort(404)
-       return '', 204
-    return jsonify(res)
+       return '', 204           
+
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
 
 
