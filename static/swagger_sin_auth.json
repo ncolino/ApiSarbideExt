@@ -1020,16 +1020,8 @@
               ,"description": "mensaje de error"    
             }
           }
-      }
-      }
-      ,"securitySchemes": {
-        "Nk-Auth": {
-          "type": "apiKey",
-          "name": "Authorization",
-          "in": "header",
-          "x-amazon-apigateway-authtype": "cognito_user_pools"
         }
-      }
+      }      
     }
   }
   
