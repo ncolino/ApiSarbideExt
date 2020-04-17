@@ -99,7 +99,7 @@ class Database:
 			,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,EXT_MEDIA.REMARKS,EXT_MEDIA.NESCALETA,EXT_MEDIA.NNOTICIA,EXT_MEDIA.ANYO_ESC,EXT_MEDIA.NOMBRE_PROG,EXT_MEDIA.OFF,EXT_MEDIA.SYNOPSIS_SAR,EXT_MEDIA.PRODUCT_CODE
 			,EXT_MEDIA.CHAPTER,EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,EXT_MEDIA.ID_EXT_MEDIA_TYPE
 			,EXT_MEDIA_TYPE.NAME AS EXT_MEDIA_TYPE, MP43_QUERY.MP43_MEDIA_VODURL, MP43_QUERY.MP43_PATH, MP43_QUERY.MP43_FILENAMEEXT, WEBM_QUERY.WEBM_MEDIA_VODURL, WEBM_QUERY.WEBM_PATH, WEBM_QUERY.WEBM_FILENAMEEXT, HLS_QUERY.HLS_RENDITION_URL
-            ,THUMBNAIL_QUERY.THUMBNAIL_MEDIA_VOD_URL, THUMBNAIL_QUERY.THUMBNAIL_PATH, THUMBNAIL_QUERY.THUMBNAIL_NAME, SPRITE_QUERY.SPRITE_MEDIA_VOD_URL, SPRITE_QUERY.SPRITE_PATH, SPRITE_QUERY.SPRITE_NAME
+            ,THUMBNAIL_QUERY.THUMBNAIL_MEDIA_VOD_URL, THUMBNAIL_QUERY.THUMBNAIL_PATH, THUMBNAIL_QUERY.THUMBNAIL_NAME,STILL_QUERY.STILL_MEDIA_VOD_URL, STILL_QUERY.STILL_PATH, STILL_QUERY.STILL_NAME, SPRITE_QUERY.SPRITE_MEDIA_VOD_URL, SPRITE_QUERY.SPRITE_PATH, SPRITE_QUERY.SPRITE_NAME
 			FROM EXT_MEDIA
 			LEFT JOIN EXT_MEDIA_TYPE ON EXT_MEDIA_TYPE.ID_EXT_MEDIA_TYPE = EXT_MEDIA.ID_EXT_MEDIA_TYPE   
             LEFT JOIN (
@@ -148,6 +148,18 @@ class Database:
             )THUMBNAIL_QUERY
             ON THUMBNAIL_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
+				 SELECT EXT_IMAGE.ID_EXT_MEDIA, PUB_CONFIG.MEDIA_VOD_URL AS STILL_MEDIA_VOD_URL,EXT_SUPPORT.PATH AS STILL_PATH,EXT_IMAGE.NAME AS STILL_NAME,EXT_IMAGE.TIME_CODE,EXT_IMAGE.WIDTH AS IWIDTH,EXT_IMAGE.HEIGHT AS IHEIGHT,EXT_IMAGE.IMAGE_SIZE,EXT_IMAGE_TYPE.NAME AS ITYPE
+				,EXT_SERVER.ID_EXT_SERVER,EXT_IMAGE.ID_EXT_IMAGE
+				FROM EXT_MEDIA, EXT_SUPPORT,EXT_SERVER,EXT_IMAGE,EXT_IMAGE_TYPE, PUB_CONFIG
+				WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_IMAGE.ID_EXT_MEDIA
+                AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
+				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
+                AND EXT_MEDIA.ASSET_ID = %s
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = 2
+            )STILL_QUERY
+            ON STILL_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
+            LEFT JOIN (
 				 SELECT EXT_IMAGE.ID_EXT_MEDIA, PUB_CONFIG.MEDIA_VOD_URL AS SPRITE_MEDIA_VOD_URL,EXT_SUPPORT.PATH AS SPRITE_PATH,EXT_IMAGE.NAME AS SPRITE_NAME,EXT_IMAGE.TIME_CODE,EXT_IMAGE.WIDTH AS IWIDTH,EXT_IMAGE.HEIGHT AS IHEIGHT,EXT_IMAGE.IMAGE_SIZE,EXT_IMAGE_TYPE.NAME AS ITYPE
 				,EXT_SERVER.ID_EXT_SERVER,EXT_IMAGE.ID_EXT_IMAGE
 				FROM EXT_MEDIA,EXT_SUPPORT,EXT_SERVER,EXT_IMAGE,EXT_IMAGE_TYPE, PUB_CONFIG
@@ -159,7 +171,7 @@ class Database:
 				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = 1
             )SPRITE_QUERY
             ON SPRITE_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
-            WHERE EXT_MEDIA.ASSET_ID = %s""", (_id, _id, _id, _id, _id, _id))
+            WHERE EXT_MEDIA.ASSET_ID = %s""", (_id, _id, _id, _id, _id, _id, _id))
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:     
@@ -171,7 +183,10 @@ class Database:
             _webm_filenameext = row['WEBM_FILENAMEEXT']      
             _thumbnail_media_vod_url = row['THUMBNAIL_MEDIA_VOD_URL']
             _thumbnail_path = row['THUMBNAIL_PATH']
-            _thumbnail_name = row['THUMBNAIL_NAME']                       
+            _thumbnail_name = row['THUMBNAIL_NAME']     
+            _still_media_vod_url = row['STILL_MEDIA_VOD_URL']
+            _still_path = row['STILL_PATH']
+            _still_name = row['STILL_NAME']                       
             _sprite_media_vod_url = row['SPRITE_MEDIA_VOD_URL']
             _sprite_path = row['SPRITE_PATH']
             _sprite_name = row['SPRITE_NAME']                       
@@ -179,6 +194,7 @@ class Database:
             mp4_pmd_url = ""
             webm_url = ""
             thumbnail_url = ""
+            still_url = ""
             sprite_url = ""
 
             if _mp43_media_vodurl:
@@ -198,6 +214,12 @@ class Database:
                     if _thumbnail_name:                      
                        thumbnail_url = _thumbnail_media_vod_url + _thumbnail_path + _thumbnail_name
                        thumbnail_url = thumbnail_url.replace("http://","https://")
+
+            if _still_media_vod_url:
+                if _still_path:
+                    if _still_name:                      
+                       still_url = _still_media_vod_url + _still_path + _still_name
+                       still_url = still_url.replace("http://","https://")
                        
             if _sprite_media_vod_url:
                 if _sprite_path:
@@ -208,6 +230,7 @@ class Database:
             row['MP4PMD_URL'] = mp4_pmd_url
             row['WEBMPMD_URL'] = webm_url            
             row['THUMBNAIL_URL'] = thumbnail_url
+            row['STILL_URL'] = still_url
             row['SPRITE_URL'] = sprite_url
 
             row['TITLE_10'] = self.funciones.FiltrarCaracteres(row['TITLE_10']) 

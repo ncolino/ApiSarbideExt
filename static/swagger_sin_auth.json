@@ -2,16 +2,16 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.6"
+      ,"version": "1.0.7"
       ,"title": "ApiSarbideExt"      
     },
-    "servers": [
+    "servers": [      
       {
         "url": "https://api.sarbide.net"
-      }  
+      }      
       ,{
         "url": "/"
-      }         
+      }
     ],
     "tags": [    
       {
@@ -310,7 +310,7 @@
                 }
               }
             }
-          }         
+          }          
         }  
         ,"options": {
           "responses": {
@@ -431,6 +431,176 @@
                 "application/json": {
                   "schema": {
                     "$ref": "#/components/schemas/extmediafull"
+                  }
+                }
+              }
+            }
+            ,"204": {
+              "description": "No ExtMedia response."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }      
+            ,"400": {
+              "description": "Failed. Misunderstood Request."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+            ,"404": {
+              "description": "Failed. ExtMedia request not found."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }         
+        }  
+        ,"options": {
+          "responses": {
+            "200": {
+              "description": "200 response",
+              "headers": {
+                "Access-Control-Expose-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Methods": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Credentials": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Max-Age": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Empty"
+                  }
+                }
+              }
+            }
+          }
+        }     
+      }
+      ,"/ExtMedia/Project/full/{tag}/{llamadopor}/{uti}/{project_id}/{txartela}": {
+        "get": {
+          "tags": [
+            "ExtMedia"
+          ],
+          "summary": "Lectura de toda la metadata de los extmedia dado el proyecto",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "tag",
+              "required": true,
+              "description": "tag",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "llamadopor",
+              "required": true,
+              "description": "llamadopor",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "uti",
+              "required": true,
+              "description": "uti",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "project_id",
+              "required": true,
+              "description": "project_id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "txartela",
+              "required": true,
+              "description": "txartela",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ]
+          ,"responses": {
+            "200": {
+              "description": "OK"
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+              ,"content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/extmediasfull"
                   }
                 }
               }
@@ -819,6 +989,15 @@
             }                    
           }
         } 
+        ,"extmediasfull": {
+          "type": "object"     
+          ,"additionalProperties" : {
+            "type" : "array"
+            ,"items" : {              
+              "$ref": "#/components/schemas/extmediafull"              
+            }                 
+          }
+        }    
         ,"extmediafull": {
           "type": "object"                 
           ,"properties" : {
@@ -954,6 +1133,10 @@
               "type" : "string"                                 
               ,"description": "THUMBNAIL_URL" 
             }
+            ,"STILL_URL" : {
+              "type" : "string"                                 
+              ,"description": "STILL_URL" 
+            }
             ,"SPRITE_URL" : {
               "type" : "string"                                 
               ,"description": "SPRITE_URL" 
@@ -1020,7 +1203,7 @@
               ,"description": "mensaje de error"    
             }
           }
-        }
+      }
       }      
     }
   }

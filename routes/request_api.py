@@ -107,6 +107,38 @@ def GetExtMediaFullByAssetId(tag,llamadopor,uti,asset_id,txartela):
     #return jsonify(res)
     
 
+
+@REQUEST_API.route('/ExtMedia/Project/full/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>/<string:txartela>', methods=['GET'])
+def GetExtMediasFullByProjectId(tag,llamadopor,uti,project_id,txartela):
+    """Lectura de toda la metadata de los extmedia dado el proyecto
+    @param tag: the id
+    @param llamadopor: the id
+    @param uti: the id
+    @param project_id: the id
+    @param txartela: the id
+    @return: 200: a EXTMEDIA_REQUESTS as a flask/response object \
+    with application/json mimetype.
+    @raise 404: if extmedia not found
+    """
+    fn = Metodos() 
+    res = fn.funcion_GetAssetListByProjectId(project_id)  
+    result = []
+    if len(res) > 0:        
+        for asset_id in res:            
+            res_asset = fn.funcion_GetExtMediaFullByAssetId(asset_id)                       
+            result.append(res_asset)
+
+    if len(result) == 0:
+       #abort(404)
+       return '', 204   
+
+    resp = jsonify(result)
+    resp.set_etag(generate_etag(json.dumps(result).encode()))
+    return resp
+    #return jsonify(res)
+
+
+
 @REQUEST_API.route('/Project/User/<string:tag>/<string:llamadopor>/<string:uti>/<string:email>', methods=['GET'])
 def GetProjectListByUser(tag,llamadopor,uti,email):
     """Lectura de todos los projects a los que tiene acceso un usuario
