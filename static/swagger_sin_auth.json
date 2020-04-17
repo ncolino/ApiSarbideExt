@@ -5,13 +5,13 @@
       ,"version": "1.0.6"
       ,"title": "ApiSarbideExt"      
     },
-    "servers": [      
+    "servers": [
       {
         "url": "https://api.sarbide.net"
-      }      
+      }  
       ,{
         "url": "/"
-      }
+      }         
     ],
     "tags": [    
       {
@@ -140,12 +140,7 @@
                 }
               }
             }
-          }
-          ,"security": [
-            {
-              "Nk-Auth": []
-            }
-          ]          
+          }                
         } 
         ,"options": {
           "responses": {
@@ -315,12 +310,7 @@
                 }
               }
             }
-          }
-          ,"security": [
-            {
-              "Nk-Auth": []
-            }
-          ]
+          }         
         }  
         ,"options": {
           "responses": {
@@ -490,12 +480,7 @@
                 }
               }
             }
-          }
-          ,"security": [
-            {
-              "Nk-Auth": []
-            }
-          ]
+          }          
         }  
         ,"options": {
           "responses": {
@@ -656,12 +641,7 @@
                 }
               }
             }
-          }
-          ,"security": [
-            {
-              "Nk-Auth": []
-            }
-          ]
+          }          
         }
         ,"options": {
           "responses": {
