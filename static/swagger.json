@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.8"
+      ,"version": "1.0.9"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -31,7 +31,7 @@
       }    
     ],
     "paths": {
-      "/Asset/ByProject/{tag}/{llamadopor}/{uti}/{project_id}": {
+      "/Asset/ByProject/{tag}/{project_id}": {
         "get": {
           "tags": [
             "Asset"
@@ -46,25 +46,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "llamadopor",
-              "required": true,
-              "description": "llamadopor",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-            ,{
-              "in": "path",
-              "name": "uti",
-              "required": true,
-              "description": "uti",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }            
             ,{
               "in": "path",
               "name": "project_id",
@@ -197,7 +179,7 @@
           }
         }    
       }
-      ,"/ExtMedia/Asset/{tag}/{llamadopor}/{uti}/{asset_id}/{txartela}": {
+      ,"/ExtMedia/Asset/{tag}/{asset_id}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -212,25 +194,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "llamadopor",
-              "required": true,
-              "description": "llamadopor",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-            ,{
-              "in": "path",
-              "name": "uti",
-              "required": true,
-              "description": "uti",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }            
             ,{
               "in": "path",
               "name": "asset_id",
@@ -239,16 +203,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "txartela",
-              "required": true,
-              "description": "txartela",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }            
           ]
           ,"responses": {
             "200": {
@@ -372,7 +327,7 @@
           }
         }     
       }
-      ,"/ExtMedia/Asset/full/{tag}/{llamadopor}/{uti}/{asset_id}/{txartela}": {
+      ,"/ExtMedia/Asset/full/{tag}/{asset_id}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -387,25 +342,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "llamadopor",
-              "required": true,
-              "description": "llamadopor",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-            ,{
-              "in": "path",
-              "name": "uti",
-              "required": true,
-              "description": "uti",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }           
             ,{
               "in": "path",
               "name": "asset_id",
@@ -414,16 +351,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "txartela",
-              "required": true,
-              "description": "txartela",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }           
           ]
           ,"responses": {
             "200": {
@@ -547,7 +475,7 @@
           }
         }     
       }      
-      ,"/ExtMedia/Project/{tag}/{llamadopor}/{uti}/{project_id}/{txartela}": {
+      ,"/ExtMedia/Project/{tag}/{project_id}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -562,25 +490,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "llamadopor",
-              "required": true,
-              "description": "llamadopor",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-            ,{
-              "in": "path",
-              "name": "uti",
-              "required": true,
-              "description": "uti",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }            
             ,{
               "in": "path",
               "name": "project_id",
@@ -589,16 +499,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "txartela",
-              "required": true,
-              "description": "txartela",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }           
           ]
           ,"responses": {
             "200": {
@@ -722,7 +623,7 @@
           }
         }     
       }
-      ,"/Project/User/{tag}/{llamadopor}/{uti}/{email}": {
+      ,"/Project/User/{tag}/{email}": {
         "get": {
           "tags": [
             "Project"
@@ -737,25 +638,7 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }
-            ,{
-              "in": "path",
-              "name": "llamadopor",
-              "required": true,
-              "description": "llamadopor",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
-            ,{
-              "in": "path",
-              "name": "uti",
-              "required": true,
-              "description": "uti",
-              "schema": {
-                "$ref": "#/components/schemas/id"
-              }
-            }
+            }            
             ,{
               "in": "path",
               "name": "email",
@@ -918,25 +801,45 @@
               ,"format" : "date-time"                                 
               ,"description": "fecha de valor del asset" 
             }
-            ,"FORMATO1_ID" : {
+            ,"F1_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "FORMATO1_ID" 
             }
-            ,"FORMATO2_ID" : {
+            ,"F2_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "FORMATO2_ID" 
             }
-            ,"CONTENIDO1_ID" : {
+            ,"C1_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "CONTENIDO1_ID" 
             }
-            ,"CONTENIDO2_ID" : {
+            ,"C2_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "CONTENIDO2_ID" 
+            }
+            ,"F1" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "FORMATO1" 
+            }
+            ,"F2" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "FORMATO2" 
+            }
+            ,"C1" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "CONTENIDO1" 
+            }
+            ,"C2" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
               "type" : "string"                                 
@@ -1035,25 +938,45 @@
               ,"format" : "date-time"                                 
               ,"description": "fecha de valor del asset" 
             }
-            ,"FORMATO1_ID" : {
+            ,"F1_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "FORMATO1_ID" 
             }
-            ,"FORMATO2_ID" : {
+            ,"F2_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "FORMATO2_ID" 
             }
-            ,"CONTENIDO1_ID" : {
+            ,"C1_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "CONTENIDO1_ID" 
             }
-            ,"CONTENIDO2_ID" : {
+            ,"C2_ID" : {
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "CONTENIDO2_ID" 
+            }
+            ,"F1" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "FORMATO1" 
+            }
+            ,"F2" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "FORMATO2" 
+            }
+            ,"C1" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "CONTENIDO1" 
+            }
+            ,"C2" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
               "type" : "string"                                 
