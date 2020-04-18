@@ -822,23 +822,19 @@
               ,"description": "CONTENIDO2_ID" 
             }
             ,"F1" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                    
               ,"description": "FORMATO1" 
             }
             ,"F2" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                  
               ,"description": "FORMATO2" 
             }
             ,"C1" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                    
               ,"description": "CONTENIDO1" 
             }
             ,"C2" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                 
               ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
@@ -959,23 +955,19 @@
               ,"description": "CONTENIDO2_ID" 
             }
             ,"F1" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                
               ,"description": "FORMATO1" 
             }
             ,"F2" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"              
               ,"description": "FORMATO2" 
             }
             ,"C1" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                 
               ,"description": "CONTENIDO1" 
             }
             ,"C2" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
+              "type" : "string"                 
               ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
