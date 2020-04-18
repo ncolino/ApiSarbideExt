@@ -2,12 +2,15 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.7"
+      ,"version": "1.0.8"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
       {
         "url": "https://api.sarbide.net"
+      } 
+      ,{
+        "url": "https://lb.sarbide.net"
       }      
       ,{
         "url": "/"
@@ -140,7 +143,7 @@
                 }
               }
             }
-          }                
+          }              
         } 
         ,"options": {
           "responses": {
@@ -480,7 +483,7 @@
                 }
               }
             }
-          }         
+          }          
         }  
         ,"options": {
           "responses": {
@@ -528,13 +531,13 @@
             }
           }
         }     
-      }
-      ,"/ExtMedia/Project/full/{tag}/{llamadopor}/{uti}/{project_id}/{txartela}": {
+      }      
+      ,"/ExtMedia/Project/{tag}/{llamadopor}/{uti}/{project_id}/{txartela}": {
         "get": {
           "tags": [
             "ExtMedia"
           ],
-          "summary": "Lectura de toda la metadata de los extmedia dado el proyecto",
+          "summary": "Lectura de parte de la metadata de los extmedia dado el proyecto",
           "parameters": [
             {
               "in": "path",
@@ -600,7 +603,7 @@
               ,"content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/extmediasfull"
+                    "$ref": "#/components/schemas/extmediassimple"
                   }
                 }
               }
@@ -988,16 +991,7 @@
               ,"description": "EXT_MEDIA_TYPE" 
             }                    
           }
-        } 
-        ,"extmediasfull": {
-          "type": "object"     
-          ,"additionalProperties" : {
-            "type" : "array"
-            ,"items" : {              
-              "$ref": "#/components/schemas/extmediafull"              
-            }                 
-          }
-        }    
+        }            
         ,"extmediafull": {
           "type": "object"                 
           ,"properties" : {
@@ -1005,11 +999,7 @@
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "identificador del ExtMedia" 
-            }
-            ,"ID" : {
-              "type" : "string"                                 
-              ,"description": "ID" 
-            }
+            }            
             ,"ASSET_ID" : {
               "type" : "integer"             
               ,"format" : "int32"                                
@@ -1087,17 +1077,7 @@
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "CHAPTER" 
-            } 
-            ,"MEDIA_UTI_CRE" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
-              ,"description": "MEDIA_UTI_CRE" 
-            }
-            ,"MEDIA_UTI_MOD" : {
-              "type" : "integer"             
-              ,"format" : "int32"             
-              ,"description": "MEDIA_UTI_MOD" 
-            } 
+            }            
             ,"MEDIA_CRE" : {
               "type" : "string"
               ,"format" : "date-time"                                 
@@ -1113,6 +1093,67 @@
               ,"format" : "int32"             
               ,"description": "ID_EXT_MEDIA_TYPE" 
             }
+            ,"EXT_MEDIA_TYPE" : {
+              "type" : "string"                                 
+              ,"description": "EXT_MEDIA_TYPE" 
+            }
+            ,"MP4PMD_URL" : {
+              "type" : "string"                                 
+              ,"description": "MP4PMD_URL" 
+            }
+            ,"WEBMPMD_URL" : {
+              "type" : "string"                                 
+              ,"description": "WEBMPMD_URL" 
+            }
+            ,"HLSRENDITION_URL" : {
+              "type" : "string"                                 
+              ,"description": "HLSRENDITION_URL" 
+            }
+            ,"THUMBNAIL_URL" : {
+              "type" : "string"                                 
+              ,"description": "THUMBNAIL_URL" 
+            }
+            ,"STILL_URL" : {
+              "type" : "string"                                 
+              ,"description": "STILL_URL" 
+            }
+            ,"SPRITE_URL" : {
+              "type" : "string"                                 
+              ,"description": "SPRITE_URL" 
+            }                   
+          }
+        }
+        ,"extmediassimple": {
+          "type": "object"     
+          ,"additionalProperties" : {
+            "type" : "array"
+            ,"items" : {              
+              "$ref": "#/components/schemas/extmediasimple"              
+            }                 
+          }
+        }   
+        ,"extmediasimple": {
+          "type": "object"                 
+          ,"properties" : {
+            "ID_EXT_MEDIA" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "identificador del ExtMedia" 
+            }            
+            ,"ASSET_ID" : {
+              "type" : "integer"             
+              ,"format" : "int32"                                
+              ,"description": "identificador del asset" 
+            }
+            ,"ASSET_VALUE" : {
+              "type" : "string"
+              ,"format" : "date-time"                                 
+              ,"description": "fecha de valor del asset" 
+            }            
+            ,"TITLE_10" : {
+              "type" : "string"                                 
+              ,"description": "título" 
+            }                                                                            
             ,"EXT_MEDIA_TYPE" : {
               "type" : "string"                                 
               ,"description": "EXT_MEDIA_TYPE" 

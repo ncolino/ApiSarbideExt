@@ -95,8 +95,9 @@ def GetExtMediaFullByAssetId(tag,llamadopor,uti,asset_id,txartela):
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
+    extended = True
     fn = Metodos() 
-    res = fn.funcion_GetExtMediaFullByAssetId(asset_id)   
+    res = fn.funcion_GetExtMediaFullByAssetId(asset_id, extended)   
     if len(res) == 0:
        #abort(404)
        return '', 204
@@ -108,8 +109,8 @@ def GetExtMediaFullByAssetId(tag,llamadopor,uti,asset_id,txartela):
     
 
 
-@REQUEST_API.route('/ExtMedia/Project/full/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>/<string:txartela>', methods=['GET'])
-def GetExtMediasFullByProjectId(tag,llamadopor,uti,project_id,txartela):
+@REQUEST_API.route('/ExtMedia/Project/<string:tag>/<string:llamadopor>/<string:uti>/<string:project_id>/<string:txartela>', methods=['GET'])
+def GetExtMediasByProjectId(tag,llamadopor,uti,project_id,txartela):
     """Lectura de toda la metadata de los extmedia dado el proyecto
     @param tag: the id
     @param llamadopor: the id
@@ -120,12 +121,13 @@ def GetExtMediasFullByProjectId(tag,llamadopor,uti,project_id,txartela):
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
+    extended = None
     fn = Metodos() 
     res = fn.funcion_GetAssetListByProjectId(project_id)  
     result = []
     if len(res) > 0:        
         for asset_id in res:            
-            res_asset = fn.funcion_GetExtMediaFullByAssetId(asset_id)                       
+            res_asset = fn.funcion_GetExtMediaFullByAssetId(asset_id, extended)                       
             result.append(res_asset)
 
     if len(result) == 0:

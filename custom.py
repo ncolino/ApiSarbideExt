@@ -94,7 +94,7 @@ class Database:
             break
         return result    
 
-    def ConsultaExtMediaFullByAssetId(self,_id):        
+    def ConsultaExtMediaFullByAssetId(self,_id,_extended):        
         self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ID,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE,EXT_MEDIA.FORMATO1_ID,EXT_MEDIA.FORMATO2_ID,EXT_MEDIA.CONTENIDO1_ID,EXT_MEDIA.CONTENIDO2_ID
 			,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,EXT_MEDIA.REMARKS,EXT_MEDIA.NESCALETA,EXT_MEDIA.NNOTICIA,EXT_MEDIA.ANYO_ESC,EXT_MEDIA.NOMBRE_PROG,EXT_MEDIA.OFF,EXT_MEDIA.SYNOPSIS_SAR,EXT_MEDIA.PRODUCT_CODE
 			,EXT_MEDIA.CHAPTER,EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,EXT_MEDIA.ID_EXT_MEDIA_TYPE
@@ -111,7 +111,7 @@ class Database:
 					AND EXT_SERVER.ID_EXT_SERVER = EXT_SUPPORT.ID_EXT_SERVER
 					AND EXT_SUPPORT.ID_EXT_SUPPORT = EXT_QUALITY.ID_EXT_SUPPORT
                     AND EXT_MEDIA.ASSET_ID = %s
-                    AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = 2
+                    AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = %s
 			) WEBM_QUERY
 		    ON WEBM_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
@@ -123,7 +123,7 @@ class Database:
 					AND EXT_SERVER.ID_EXT_SERVER = EXT_SUPPORT.ID_EXT_SERVER
 					AND EXT_SUPPORT.ID_EXT_SUPPORT = EXT_QUALITY.ID_EXT_SUPPORT
                     AND EXT_MEDIA.ASSET_ID = %s
-					AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = 1
+					AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = %s
 			) MP43_QUERY
 		    ON MP43_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
@@ -132,7 +132,7 @@ class Database:
 				 where EXT_MEDIA.ID_EXT_MEDIA = EXT_QUALITY_CMS_RENDITION.ID_EXT_MEDIA
                  AND CMS_RENDITION.ID_CMS_RENDITION=EXT_QUALITY_CMS_RENDITION.ID_CMS_RENDITION
                  AND EXT_MEDIA.ASSET_ID = %s
-				 AND CMS_RENDITION.ID_PUBLICATION_TYPE = 2
+				 AND CMS_RENDITION.ID_PUBLICATION_TYPE = %s
             ) HLS_QUERY
             ON HLS_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
@@ -144,7 +144,7 @@ class Database:
 				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
 				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
                 AND EXT_MEDIA.ASSET_ID = %s
-				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = 3
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s
             )THUMBNAIL_QUERY
             ON THUMBNAIL_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
@@ -156,7 +156,7 @@ class Database:
 				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
 				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
                 AND EXT_MEDIA.ASSET_ID = %s
-				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = 2
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s
             )STILL_QUERY
             ON STILL_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
             LEFT JOIN (
@@ -168,10 +168,10 @@ class Database:
 				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
 				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
                 AND EXT_MEDIA.ASSET_ID = %s
-				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = 1
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s
             )SPRITE_QUERY
             ON SPRITE_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
-            WHERE EXT_MEDIA.ASSET_ID = %s""", (_id, _id, _id, _id, _id, _id, _id))
+            WHERE (EXT_MEDIA.ID_EXT_MEDIA=EXT_MEDIA.ID) AND EXT_MEDIA.ASSET_ID = %s""", (_id, 2, _id, 1, _id, 2, _id, 3, _id, 2, _id, 1, _id))
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:     
@@ -237,9 +237,59 @@ class Database:
             row['SCRIPT_DESCRIPTION'] = self.funciones.FiltrarCaracteres(row['SCRIPT_DESCRIPTION']) 
             row['REMARKS'] = self.funciones.FiltrarCaracteres(row['REMARKS']) 
             row['OFF'] = self.funciones.FiltrarCaracteres(row['OFF']) 
-            row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])             
-            #result.append(row)
-            result = row
+            row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])        
+
+            if _extended:
+                new_row = {
+                    "ID_EXT_MEDIA": row['ID_EXT_MEDIA']
+                    , "ASSET_ID": row['ASSET_ID']
+                    , "ASSET_VALUE": row['ASSET_VALUE']
+                    , "FORMATO1_ID": row['FORMATO1_ID']
+                    , "FORMATO2_ID": row['FORMATO2_ID']
+                    , "CONTENIDO1_ID": row['CONTENIDO1_ID']
+                    , "CONTENIDO2_ID": row['CONTENIDO2_ID']
+                    , "TITLE_10": row['TITLE_10']
+                    , "DURATION": row['DURATION']
+                    , "SCRIPT_DESCRIPTION": row['SCRIPT_DESCRIPTION']
+                    , "REMARKS": row['REMARKS']
+                    , "NESCALETA": row['NESCALETA']
+                    , "NNOTICIA": row['NNOTICIA']
+                    , "ANYO_ESC": row['ANYO_ESC']
+                    , "NOMBRE_PROG": row['NOMBRE_PROG']
+                    , "OFF": row['OFF']
+                    , "SYNOPSIS_SAR": row['SYNOPSIS_SAR']
+                    , "PRODUCT_CODE": row['PRODUCT_CODE']
+                    , "CHAPTER": row['CHAPTER']
+                    , "MEDIA_CRE": row['MEDIA_CRE']
+                    , "MEDIA_MOD": row['MEDIA_MOD']
+                    , "ID_EXT_MEDIA_TYPE": row['ID_EXT_MEDIA_TYPE']
+                    , "EXT_MEDIA_TYPE": row['EXT_MEDIA_TYPE']
+                    , "HLS_RENDITION_URL": row['HLS_RENDITION_URL']
+                    , "MP4PMD_URL": row['MP4PMD_URL']
+                    , "WEBMPMD_URL": row['WEBMPMD_URL']
+                    , "THUMBNAIL_URL": row['THUMBNAIL_URL']
+                    , "STILL_URL": row['STILL_URL']
+                    , "SPRITE_URL": row['SPRITE_URL']               
+                }
+                #result.append(row)
+                result = new_row
+            else:
+                new_row = {
+                    "ID_EXT_MEDIA": row['ID_EXT_MEDIA']
+                    , "ASSET_ID": row['ASSET_ID']
+                    , "ASSET_VALUE": row['ASSET_VALUE']                   
+                    , "TITLE_10": row['TITLE_10']
+                    , "DURATION": row['DURATION']                    
+                    , "EXT_MEDIA_TYPE": row['EXT_MEDIA_TYPE']
+                    , "HLS_RENDITION_URL": row['HLS_RENDITION_URL']
+                    , "MP4PMD_URL": row['MP4PMD_URL']
+                    , "WEBMPMD_URL": row['WEBMPMD_URL']
+                    , "THUMBNAIL_URL": row['THUMBNAIL_URL']
+                    , "STILL_URL": row['STILL_URL']
+                    , "SPRITE_URL": row['SPRITE_URL']               
+                }
+                #result.append(row)
+                result = new_row
             break
         return result    
 
@@ -278,10 +328,10 @@ class Metodos:
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
-    def funcion_GetExtMediaFullByAssetId(self,_id):
+    def funcion_GetExtMediaFullByAssetId(self,_id,_extended):
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id), self.funciones._INFO)  
         db = Database()  
-        asss = db.ConsultaExtMediaFullByAssetId(_id)        
+        asss = db.ConsultaExtMediaFullByAssetId(_id,_extended)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
