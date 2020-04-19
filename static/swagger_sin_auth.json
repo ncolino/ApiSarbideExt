@@ -13,6 +13,12 @@
         "url": "https://lb.sarbide.net"
       }      
       ,{
+        "url": "https://6w2w4m6jz8.execute-api.eu-west-1.amazonaws.com/Test"
+      }  
+      ,{
+        "url": "https://6w2w4m6jz8.execute-api.eu-west-1.amazonaws.com/Production"
+      }          
+      ,{
         "url": "/"
       }
     ],
