@@ -67,7 +67,7 @@ class Database:
         self.cur = self.con.cursor()
 
     def ConsultaAssetListByProjectId(self,_id):        
-        self.cur.execute("SELECT ASSET_ID FROM PROJECT_ASSET WHERE PROJECT_ID=%s", _id)
+        self.cur.execute("SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID FROM PROJECT_ASSET LEFT JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID WHERE EXT_MEDIA.ID IS NOT NULL AND PROJECT_ASSET.PROJECT_ID=%s", _id)
         #results = self.cur.fetchall()  --> usamos mejor el cursor
         result = []
         for row in self.cur:
