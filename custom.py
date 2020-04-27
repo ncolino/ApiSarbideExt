@@ -67,7 +67,7 @@ class Database:
         self.cur = self.con.cursor()
 
     def ConsultaAssetListByProjectId(self,_id):        
-        self.cur.execute("SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID FROM PROJECT_ASSET LEFT JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID WHERE EXT_MEDIA.ID IS NOT NULL AND PROJECT_ASSET.PROJECT_ID=%s", _id)
+        self.cur.execute("SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID FROM PROJECT_ASSET LEFT JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID WHERE EXT_MEDIA.ID IS NOT NULL AND PROJECT_ASSET.PROJECT_ID=%s ORDER BY PROJECT_ASSET.FECHA_CRE DESC", _id)
         #results = self.cur.fetchall()  --> usamos mejor el cursor
         result = []
         for row in self.cur:
@@ -309,17 +309,18 @@ class Database:
 
 
     def ConsultaProjectListByUser(self,_email):        
-        self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01
+        self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01, DATE_FORMAT(NODE_GROUPUSER_MEDIA.NGM_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS FECHA_CRE
             FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS
             WHERE PROJECT.PROJECT_ID = NODE_GROUPUSER_MEDIA.PROJECT_ID
             AND NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
             AND GROUPUSER_USERS.USER_ID = USERS.USER_ID 
-            AND USERS.E_CORREO =%s""", _email)
+            AND USERS.E_CORREO =%s ORDER BY FECHA_CRE DESC""", _email)
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:            
             row['PROJECT_ID'] = row['PROJECT_ID'] 
-            row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01'])             
+            row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01'])       
+            row['FECHA_CRE'] = row['FECHA_CRE']       
             result.append(row)            
         return result
 

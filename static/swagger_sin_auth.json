@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.10"
+      ,"version": "1.0.11"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -11,7 +11,7 @@
       }  
       ,{
         "url": "https://lb.sarbide.net"
-      }      
+      } 
       ,{
         "url": "https://6w2w4m6jz8.execute-api.eu-west-1.amazonaws.com/Test"
       }  
@@ -131,7 +131,7 @@
                 }
               }
             }
-          }                           
+          }                  
         } 
         ,"options": {
           "responses": {
@@ -274,7 +274,7 @@
                 }
               }
             }
-          }          
+          }         
         }  
         ,"options": {
           "responses": {
@@ -417,7 +417,7 @@
                 }
               }
             }
-          }          
+          }
         }  
         ,"options": {
           "responses": {
@@ -703,7 +703,7 @@
                 }
               }
             }
-          }          
+          }         
         }
         ,"options": {
           "responses": {
@@ -803,19 +803,19 @@
               ,"description": "CONTENIDO2_ID" 
             }
             ,"F1" : {
-              "type" : "string"                  
+              "type" : "string"                    
               ,"description": "FORMATO1" 
             }
             ,"F2" : {
-              "type" : "string"                
+              "type" : "string"                  
               ,"description": "FORMATO2" 
             }
             ,"C1" : {
-              "type" : "string"                 
+              "type" : "string"                    
               ,"description": "CONTENIDO1" 
             }
             ,"C2" : {
-              "type" : "string"                
+              "type" : "string"                 
               ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
@@ -936,11 +936,11 @@
               ,"description": "CONTENIDO2_ID" 
             }
             ,"F1" : {
-              "type" : "string"                  
+              "type" : "string"                
               ,"description": "FORMATO1" 
             }
             ,"F2" : {
-              "type" : "string"                 
+              "type" : "string"              
               ,"description": "FORMATO2" 
             }
             ,"C1" : {
@@ -948,7 +948,7 @@
               ,"description": "CONTENIDO1" 
             }
             ,"C2" : {
-              "type" : "string"                   
+              "type" : "string"                 
               ,"description": "CONTENIDO2" 
             }
             ,"TITLE_10" : {
@@ -1126,6 +1126,11 @@
               "type" : "string"                                 
               ,"description": "titulo del project" 
             }
+            ,"FECHA_CRE" : {
+              "type" : "string"
+              ,"format" : "date-time"                                 
+              ,"description": "fecha de relación del proyecto con el grupo de usuarios" 
+            }
           }
         }       
         ,"assets": {
@@ -1166,7 +1171,7 @@
             }
           }
       }
-      }     
+      }
     }
   }
   
