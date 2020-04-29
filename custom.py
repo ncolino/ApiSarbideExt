@@ -66,15 +66,24 @@ class Database:
                                    DictCursor)
         self.cur = self.con.cursor()
 
-    def ConsultaAssetListByProjectId(self,_id):        
-        self.cur.execute("SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID FROM PROJECT_ASSET LEFT JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID WHERE EXT_MEDIA.ID IS NOT NULL AND PROJECT_ASSET.PROJECT_ID=%s ORDER BY PROJECT_ASSET.FECHA_CRE DESC", _id)
+    def ConsultaAssetListByProjectId(self, _id, _email):        
+        self.cur.execute("""SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID 
+        FROM PROJECT_ASSET
+        JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID 
+        JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+        JOIN GROUPUSER_USERS ON NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
+        JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID
+        WHERE EXT_MEDIA.ID IS NOT NULL 
+        AND PROJECT_ASSET.PROJECT_ID = %s
+        AND USERS.E_CORREO = %s
+        ORDER BY PROJECT_ASSET.FECHA_CRE DESC""", (_id, _email))
         #results = self.cur.fetchall()  --> usamos mejor el cursor
         result = []
         for row in self.cur:
             result.append(row['ASSET_ID'])
         return result   
 
-    def ConsultaExtMediaByAssetId(self,_id):        
+    def ConsultaExtMediaByAssetId(self,_id,_email):        
         self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ID,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE,
             EXT_MEDIA.FORMATO1_ID AS F1_ID,EXT_MEDIA.FORMATO2_ID AS F2_ID,CONTENIDO1.CONTENIDO1_EUS AS C1,CONTENIDO2.CONTENIDO2_EUS AS C2,FORMATO1.FORMATO1_EUS AS F1,FORMATO2.FORMATO2_EUS AS F2,
             EXT_MEDIA.CONTENIDO1_ID AS C1_ID,EXT_MEDIA.CONTENIDO2_ID AS C2_ID,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,
@@ -82,11 +91,17 @@ class Database:
             EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,
             EXT_MEDIA.ID_EXT_MEDIA_TYPE,EXT_MEDIA_TYPE.NAME AS EXT_MEDIA_TYPE 
             FROM EXT_MEDIA 
+            JOIN PROJECT_ASSET ON EXT_MEDIA.ASSET_ID = PROJECT_ASSET.ASSET_ID
+            JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+            JOIN GROUPUSER_USERS ON GROUPUSER_USERS.GROUP_USER_ID = NODE_GROUPUSER_MEDIA.GROUP_USER_ID
+            JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID
             LEFT JOIN FORMATO2 ON (EXT_MEDIA.FORMATO1_ID=FORMATO2.FORMATO1_ID AND EXT_MEDIA.FORMATO2_ID=FORMATO2.FORMATO2_ID) 
             LEFT JOIN FORMATO1 ON EXT_MEDIA.FORMATO1_ID=FORMATO1.FORMATO1_ID 
             LEFT JOIN CONTENIDO2 ON (EXT_MEDIA.CONTENIDO1_ID=CONTENIDO2.CONTENIDO1_ID AND EXT_MEDIA.CONTENIDO2_ID=CONTENIDO2.CONTENIDO2_ID) 
             LEFT JOIN CONTENIDO1 ON EXT_MEDIA.CONTENIDO1_ID=CONTENIDO1.CONTENIDO1_ID 
-            LEFT JOIN EXT_MEDIA_TYPE ON EXT_MEDIA_TYPE.ID_EXT_MEDIA_TYPE = EXT_MEDIA.ID_EXT_MEDIA_TYPE WHERE ASSET_ID=%s""", _id)
+            LEFT JOIN EXT_MEDIA_TYPE ON EXT_MEDIA_TYPE.ID_EXT_MEDIA_TYPE = EXT_MEDIA.ID_EXT_MEDIA_TYPE 
+            WHERE EXT_MEDIA.ASSET_ID = %s
+            AND USERS.E_CORREO = %s""", (_id, _email))
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:            
@@ -100,13 +115,17 @@ class Database:
             break
         return result    
 
-    def ConsultaExtMediaFullByAssetId(self,_id,_extended):        
+    def ConsultaExtMediaFullByAssetId(self,_id,_email,_extended):        
         self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ID,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE,EXT_MEDIA.FORMATO1_ID AS F1_ID,EXT_MEDIA.FORMATO2_ID AS F2_ID,CONTENIDO1.CONTENIDO1_EUS AS C1,CONTENIDO2.CONTENIDO2_EUS AS C2,FORMATO1.FORMATO1_EUS AS F1,FORMATO2.FORMATO2_EUS AS F2,
             EXT_MEDIA.CONTENIDO1_ID AS C1_ID,EXT_MEDIA.CONTENIDO2_ID AS C2_ID,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,EXT_MEDIA.REMARKS,EXT_MEDIA.NESCALETA,EXT_MEDIA.NNOTICIA,EXT_MEDIA.ANYO_ESC,EXT_MEDIA.NOMBRE_PROG,EXT_MEDIA.OFF,EXT_MEDIA.SYNOPSIS_SAR,EXT_MEDIA.PRODUCT_CODE
 			,EXT_MEDIA.CHAPTER,EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,EXT_MEDIA.ID_EXT_MEDIA_TYPE
 			,EXT_MEDIA_TYPE.NAME AS EXT_MEDIA_TYPE, MP43_QUERY.MP43_MEDIA_VODURL, MP43_QUERY.MP43_PATH, MP43_QUERY.MP43_FILENAMEEXT, WEBM_QUERY.WEBM_MEDIA_VODURL, WEBM_QUERY.WEBM_PATH, WEBM_QUERY.WEBM_FILENAMEEXT, HLS_QUERY.HLS_RENDITION_URL
             ,THUMBNAIL_QUERY.THUMBNAIL_MEDIA_VOD_URL, THUMBNAIL_QUERY.THUMBNAIL_PATH, THUMBNAIL_QUERY.THUMBNAIL_NAME,STILL_QUERY.STILL_MEDIA_VOD_URL, STILL_QUERY.STILL_PATH, STILL_QUERY.STILL_NAME, SPRITE_QUERY.SPRITE_MEDIA_VOD_URL, SPRITE_QUERY.SPRITE_PATH, SPRITE_QUERY.SPRITE_NAME
-			FROM EXT_MEDIA
+			FROM EXT_MEDIA 
+            JOIN PROJECT_ASSET ON EXT_MEDIA.ASSET_ID = PROJECT_ASSET.ASSET_ID
+            JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+            JOIN GROUPUSER_USERS ON GROUPUSER_USERS.GROUP_USER_ID = NODE_GROUPUSER_MEDIA.GROUP_USER_ID
+            JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID
             LEFT JOIN FORMATO2 ON (EXT_MEDIA.FORMATO1_ID=FORMATO2.FORMATO1_ID AND EXT_MEDIA.FORMATO2_ID=FORMATO2.FORMATO2_ID) 
             LEFT JOIN FORMATO1 ON EXT_MEDIA.FORMATO1_ID=FORMATO1.FORMATO1_ID 
             LEFT JOIN CONTENIDO2 ON (EXT_MEDIA.CONTENIDO1_ID=CONTENIDO2.CONTENIDO1_ID AND EXT_MEDIA.CONTENIDO2_ID=CONTENIDO2.CONTENIDO2_ID) 
@@ -181,7 +200,9 @@ class Database:
 				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s
             )SPRITE_QUERY
             ON SPRITE_QUERY.ID_EXT_MEDIA = EXT_MEDIA.ID_EXT_MEDIA
-            WHERE (EXT_MEDIA.ID_EXT_MEDIA=EXT_MEDIA.ID) AND EXT_MEDIA.ASSET_ID = %s""", (_id, 2, _id, 1, _id, 2, _id, 3, _id, 2, _id, 1, _id))
+            WHERE (EXT_MEDIA.ID_EXT_MEDIA=EXT_MEDIA.ID) 
+            AND EXT_MEDIA.ASSET_ID = %s
+            AND USERS.E_CORREO = %s""", (_id, 2, _id, 1, _id, 2, _id, 3, _id, 2, _id, 1, _id, _email))
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:     
@@ -307,14 +328,15 @@ class Database:
             break
         return result    
 
-
     def ConsultaProjectListByUser(self,_email):        
         self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01, DATE_FORMAT(NODE_GROUPUSER_MEDIA.NGM_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS FECHA_CRE
-            FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS
+            FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS,GROUPUSER_FRAMEAPLICATION
             WHERE PROJECT.PROJECT_ID = NODE_GROUPUSER_MEDIA.PROJECT_ID
             AND NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
             AND GROUPUSER_USERS.USER_ID = USERS.USER_ID 
-            AND USERS.E_CORREO =%s ORDER BY FECHA_CRE DESC""", _email)
+            AND GROUPUSER_USERS.GROUP_USER_ID = GROUPUSER_FRAMEAPLICATION.GROUP_USER_ID
+            AND GROUPUSER_FRAMEAPLICATION.FRAME_APLICATION_ID = 115
+            AND USERS.E_CORREO = %s ORDER BY FECHA_CRE DESC""", _email)
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:            
@@ -324,29 +346,50 @@ class Database:
             result.append(row)            
         return result
 
+    def ConsultaUserRightFramesAppByFrameAppUser(self,_frameAppid,_email):  
+        self.cur.execute("""SELECT RIGHT_FRAMEAPLICATION.RIGHT_FRAMEAPLICATION_ID, RIGHT_FRAMEAPLICATION.FRAME_APLICATION_ID, RIGHT_FRAMEAPLICATION.NAME,RIGHT_FRAMEAPLICATION.WEB_URL,RIGHT_FRAMEAPLICATION.WEB_CLASS,RIGHT_FRAMEAPLICATION.WEB_TITLE 
+        FROM RIGHT_FRAMEAPLICATION,GROUP_USER_RIGHTFRAMEAPP,GROUPUSER_USERS,USERS
+        WHERE 
+        RIGHT_FRAMEAPLICATION.RIGHT_FRAMEAPLICATION_ID = GROUP_USER_RIGHTFRAMEAPP.RIGHT_FRAMEAPLICATION_ID
+        AND GROUP_USER_RIGHTFRAMEAPP.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
+        AND GROUPUSER_USERS.USER_ID = USERS.USER_ID
+        AND RIGHT_FRAMEAPLICATION.FRAME_APLICATION_ID = %s
+        AND USERS.E_CORREO = %s""", (_frameAppid, _email))
+        #results = self.cur.fetchall()  --> usamos mejor el cursor        
+        result = []
+        for row in self.cur:            
+            row['RIGHT_FRAMEAPLICATION_ID'] = row['RIGHT_FRAMEAPLICATION_ID'] 
+            row['FRAME_APLICATION_ID'] = row['FRAME_APLICATION_ID'] 
+            row['NAME'] = self.funciones.FiltrarCaracteres(row['NAME'])       
+            row['WEB_URL'] = row['WEB_URL']       
+            row['WEB_CLASS'] = row['WEB_CLASS']    
+            row['WEB_TITLE'] = row['WEB_TITLE']    
+            result.append(row)   
+        return result
+
 
 class Metodos:    
     def __init__(self):
         self.funciones = Funciones()            
 
-    def funcion_GetAssetListByProjectId(self,_id):        
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetAssetListByProjectId - _id: ', _id), self.funciones._INFO)  
+    def funcion_GetAssetListByProjectId(self,_id,_email):        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('INICIO funcion_GetAssetListByProjectId - _id: ', _id,' - _email:',_email), self.funciones._INFO)  
         db = Database()  
-        asss = db.ConsultaAssetListByProjectId(_id)        
+        asss = db.ConsultaAssetListByProjectId(_id,_email)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetAssetListByProjectId - assets: ', str(asss)), self.funciones._INFO)    
         return asss
         
-    def funcion_GetExtMediaByAssetId(self,_id):
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaByAssetId - _id: ', _id), self.funciones._INFO)
+    def funcion_GetExtMediaByAssetId(self,_id,_email):
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('INICIO funcion_GetExtMediaByAssetId - _id: ', _id,' - _email:',_email), self.funciones._INFO)
         db = Database()  
-        asss = db.ConsultaExtMediaByAssetId(_id)        
+        asss = db.ConsultaExtMediaByAssetId(_id, _email)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
-    def funcion_GetExtMediaFullByAssetId(self,_id,_extended):
-        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id), self.funciones._INFO)  
+    def funcion_GetExtMediaFullByAssetId(self,_id,_email,_extended):
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id, ' - _email:', _email, ' - extended:', _extended), self.funciones._INFO)  
         db = Database()  
-        asss = db.ConsultaExtMediaFullByAssetId(_id,_extended)        
+        asss = db.ConsultaExtMediaFullByAssetId(_id,_email,_extended)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
@@ -356,4 +399,11 @@ class Metodos:
         proys = db.ConsultaProjectListByUser(_email)        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetProjectListByUser - proys: ', str(proys)), self.funciones._INFO)    
         return proys
+
+    def funcion_GetUserRightFramesAppByFrameAppUser(self,_frameAppid,_email):        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('INICIO funcion_GetUserRightFramesAppByFrameAppUser - _email: ', _email, ' - _frameAppid:',_frameAppid), self.funciones._INFO)  
+        db = Database()  
+        rightFrameApps = db.ConsultaUserRightFramesAppByFrameAppUser(_frameAppid,_email)        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetUserRightFramesAppByFrameAppUser - rightFrameApps: ', str(rightFrameApps)), self.funciones._INFO)    
+        return rightFrameApps
         

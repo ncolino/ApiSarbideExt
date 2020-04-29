@@ -2,25 +2,13 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.11"
+      ,"version": "1.0.12"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
       {
         "url": "https://api.sarbide.net"
-      }  
-      ,{
-        "url": "https://lb.sarbide.net"
-      } 
-      ,{
-        "url": "https://6w2w4m6jz8.execute-api.eu-west-1.amazonaws.com/Test"
-      }  
-      ,{
-        "url": "https://6w2w4m6jz8.execute-api.eu-west-1.amazonaws.com/Production"
-      }          
-      ,{
-        "url": "/"
-      }
+      }        
     ],
     "tags": [    
       {
@@ -34,10 +22,14 @@
       ,{
         "name": "Project",
         "description": "Example API for requesting and return project requests"
+      }  
+      ,{
+        "name": "Rights",
+        "description": "Example API for requesting and return project requests"
       }    
     ],
     "paths": {
-      "/Asset/ByProject/{tag}/{project_id}": {
+      "/Asset/ByProject/{tag}/{project_id}/{email}": {
         "get": {
           "tags": [
             "Asset"
@@ -58,6 +50,15 @@
               "name": "project_id",
               "required": true,
               "description": "project_id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
@@ -131,7 +132,7 @@
                 }
               }
             }
-          }                  
+          }                 
         } 
         ,"options": {
           "responses": {
@@ -180,7 +181,7 @@
           }
         }    
       }
-      ,"/ExtMedia/Asset/{tag}/{asset_id}": {
+      ,"/ExtMedia/Asset/{tag}/{asset_id}/{email}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -204,7 +205,16 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }            
+            }  
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }          
           ]
           ,"responses": {
             "200": {
@@ -274,7 +284,7 @@
                 }
               }
             }
-          }         
+          }          
         }  
         ,"options": {
           "responses": {
@@ -323,7 +333,7 @@
           }
         }     
       }
-      ,"/ExtMedia/Asset/full/{tag}/{asset_id}": {
+      ,"/ExtMedia/Asset/full/{tag}/{asset_id}/{email}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -347,7 +357,16 @@
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
-            }           
+            }   
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }        
           ]
           ,"responses": {
             "200": {
@@ -417,7 +436,7 @@
                 }
               }
             }
-          }
+          }          
         }  
         ,"options": {
           "responses": {
@@ -466,7 +485,7 @@
           }
         }     
       }      
-      ,"/ExtMedia/Project/{tag}/{project_id}": {
+      ,"/ExtMedia/Project/{tag}/{project_id}/{email}": {
         "get": {
           "tags": [
             "ExtMedia"
@@ -487,6 +506,15 @@
               "name": "project_id",
               "required": true,
               "description": "project_id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
               "schema": {
                 "$ref": "#/components/schemas/id"
               }
@@ -703,7 +731,7 @@
                 }
               }
             }
-          }         
+          }          
         }
         ,"options": {
           "responses": {
@@ -752,7 +780,158 @@
           }
         }       
       }
-          
+      ,"/RightFrameApp/FrameApp/User/{tag}/{frameAppid}/{email}": {
+        "get": {
+          "tags": [
+            "Rights"
+          ],
+          "summary": "Lectura de los RIGHT_FRAMEAPLICATION para una FRAME_APLICATION dada, a la que tiene acceso un usuario dado un email",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "tag",
+              "required": true,
+              "description": "tag",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }    
+            ,{
+              "in": "path",
+              "name": "frameAppid",
+              "required": true,
+              "description": "identificador del frame_aplication",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }        
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ]
+          ,"responses": {
+            "200": {
+              "description": "OK"
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+              ,"content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/right_frame_aplications"
+                  }
+                }
+              }
+            }  
+            ,"204": {
+              "description": "No rightframeaplication response."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }    
+            ,"400": {
+              "description": "Failed. Misunderstood Request."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+            ,"404": {
+              "description": "Failed. rightframeaplication request not found."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }         
+        }
+        ,"options": {
+          "responses": {
+            "200": {
+              "description": "200 response",
+              "headers": {
+                "Access-Control-Expose-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Methods": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Credentials": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Max-Age": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Empty"
+                  }
+                }
+              }
+            }
+          }
+        }       
+      }              
     },
     "components": {
       "schemas": {
@@ -1132,6 +1311,46 @@
               ,"description": "fecha de relación del proyecto con el grupo de usuarios" 
             }
           }
+        }
+        ,"right_frame_aplications": {
+          "type": "object"     
+          ,"additionalProperties" : {
+            "type" : "array"
+            ,"items" : {              
+              "$ref": "#/components/schemas/right_frame_aplication"              
+            }                 
+          }
+        } 
+        ,"right_frame_aplication": {
+          "type": "object"             
+          ,"properties" : {          
+            "RIGHT_FRAMEAPLICATION_ID" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "identificador del rightframeaplication" 
+            }
+            ,"FRAME_APLICATION_ID" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "identificador del frame_aplication" 
+            }
+            ,"NAME" : {
+              "type" : "string"                                 
+              ,"description": "NAME" 
+            }
+            ,"WEB_URL" : {
+              "type" : "string"                                 
+              ,"description": "WEB_URL" 
+            }
+            ,"WEB_CLASS" : {
+              "type" : "string"                                 
+              ,"description": "WEB_CLASS" 
+            }
+            ,"WEB_TITLE" : {
+              "type" : "string"                                 
+              ,"description": "WEB_TITLE" 
+            }            
+          }
         }       
         ,"assets": {
           "type": "object"     
@@ -1170,8 +1389,8 @@
               ,"description": "mensaje de error"    
             }
           }
-      }
-      }
+        }
+      }     
     }
   }
   

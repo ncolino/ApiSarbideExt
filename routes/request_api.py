@@ -33,17 +33,18 @@ def PaginaInicio():
     return 'Página de Inicio ' + settings.APP_HOSTNAME, 200
 
 
-@REQUEST_API.route('/Asset/ByProject/<string:tag>/<string:project_id>', methods=['GET'])
-def GetAssetListByProjectId(tag,project_id):
+@REQUEST_API.route('/Asset/ByProject/<string:tag>/<string:project_id>/<string:email>', methods=['GET'])
+def GetAssetListByProjectId(tag,project_id,email):
     """Retorna la lista de assets para un proyecto dado
     @param tag: the id    
     @param project_id: the id
+    @param email: email del user
     @return: 200: a ASSET_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if asset not found
     """
     fn = Metodos() 
-    res = fn.funcion_GetAssetListByProjectId(project_id)   
+    res = fn.funcion_GetAssetListByProjectId(project_id,email)   
     if len(res) == 0:
        #abort(404)
        return '', 204
@@ -55,17 +56,18 @@ def GetAssetListByProjectId(tag,project_id):
     
 
 
-@REQUEST_API.route('/ExtMedia/Asset/<string:tag>/<string:asset_id>', methods=['GET'])
-def GetExtMediaByAssetId(tag,asset_id):
+@REQUEST_API.route('/ExtMedia/Asset/<string:tag>/<string:asset_id>/<string:email>', methods=['GET'])
+def GetExtMediaByAssetId(tag,asset_id,email):
     """Lectura del extmedia dado el asset
     @param tag: the id   
-    @param asset_id: the id    
+    @param asset_id: the id
+    @param email: email del user    
     @return: 200: a EXTMEDIA_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
     fn = Metodos() 
-    res = fn.funcion_GetExtMediaByAssetId(asset_id)   
+    res = fn.funcion_GetExtMediaByAssetId(asset_id,email)   
     if len(res) == 0:
        #abort(404)
        return '', 204
@@ -78,18 +80,19 @@ def GetExtMediaByAssetId(tag,asset_id):
 
 
 
-@REQUEST_API.route('/ExtMedia/Asset/full/<string:tag>/<string:asset_id>', methods=['GET'])
-def GetExtMediaFullByAssetId(tag,asset_id):
+@REQUEST_API.route('/ExtMedia/Asset/full/<string:tag>/<string:asset_id>/<string:email>', methods=['GET'])
+def GetExtMediaFullByAssetId(tag,asset_id,email):
     """Lectura de toda la metadata de extmedia dado el asset
     @param tag: the id   
-    @param asset_id: the id   
+    @param asset_id: the id
+    @param email: email del user   
     @return: 200: a EXTMEDIA_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
     extended = True
     fn = Metodos() 
-    res = fn.funcion_GetExtMediaFullByAssetId(asset_id, extended)   
+    res = fn.funcion_GetExtMediaFullByAssetId(asset_id, email, extended)   
     if len(res) == 0:
        #abort(404)
        return '', 204
@@ -101,22 +104,23 @@ def GetExtMediaFullByAssetId(tag,asset_id):
     
 
 
-@REQUEST_API.route('/ExtMedia/Project/<string:tag>/<string:project_id>', methods=['GET'])
-def GetExtMediasByProjectId(tag,project_id):
+@REQUEST_API.route('/ExtMedia/Project/<string:tag>/<string:project_id>/<string:email>', methods=['GET'])
+def GetExtMediasByProjectId(tag,project_id,email):
     """Lectura de toda la metadata de los extmedia dado el proyecto
     @param tag: the id   
     @param project_id: the id
+    @param email: email del user
     @return: 200: a EXTMEDIA_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
     extended = None
     fn = Metodos() 
-    res = fn.funcion_GetAssetListByProjectId(project_id)  
+    res = fn.funcion_GetAssetListByProjectId(project_id, email)  
     result = []
     if len(res) > 0:        
         for asset_id in res:            
-            res_asset = fn.funcion_GetExtMediaFullByAssetId(asset_id, extended)                       
+            res_asset = fn.funcion_GetExtMediaFullByAssetId(asset_id, email, extended)                       
             result.append(res_asset)
 
     if len(result) == 0:
@@ -134,13 +138,34 @@ def GetExtMediasByProjectId(tag,project_id):
 def GetProjectListByUser(tag,email):
     """Lectura de todos los projects a los que tiene acceso un usuario
     @param tag: the id   
-    @param email:email del user
+    @param email: email del user
     @return: 200: a PROJECT_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
     fn = Metodos() 
     res = fn.funcion_GetProjectListByUser(email)   
+    if len(res) == 0:
+       #abort(404)
+       return '', 204           
+
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
+
+@REQUEST_API.route('/RightFrameApp/FrameApp/User/<string:tag>/<string:frameAppid>/<string:email>', methods=['GET'])
+def GetUserRightFramesAppByFrameAppUser(tag,frameAppid,email):
+    """Lectura de todos los projects a los que tiene acceso un usuario
+    @param tag: the id   
+    @param frameAppid: the id   
+    @param email: email del user
+    @return: 200: a RIGHTFRAMEAPPS_REQUESTS as a flask/response object \
+    with application/json mimetype.
+    @raise 404: if extmedia not found
+    """
+    fn = Metodos() 
+    res = fn.funcion_GetUserRightFramesAppByFrameAppUser(frameAppid,email)   
     if len(res) == 0:
        #abort(404)
        return '', 204           
