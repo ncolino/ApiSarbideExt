@@ -870,7 +870,7 @@
               ,"content": {
                 "application/json": {
                   "schema": {
-                    "$ref": "#/components/schemas/right_frame_aplications"
+                    "$ref": "#/components/schemas/rightframeaplications"
                   }
                 }
               }
@@ -1354,16 +1354,16 @@
             }
           }
         }
-        ,"right_frame_aplications": {
+        ,"rightframeaplications": {
           "type": "object"     
           ,"additionalProperties" : {
             "type" : "array"
             ,"items" : {              
-              "$ref": "#/components/schemas/right_frame_aplication"              
+              "$ref": "#/components/schemas/rightframeaplication"              
             }                 
           }
         } 
-        ,"right_frame_aplication": {
+        ,"rightframeaplication": {
           "type": "object"             
           ,"properties" : {          
             "RIGHT_FRAMEAPLICATION_ID" : {
