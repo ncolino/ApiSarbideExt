@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.14"
+      ,"version": "1.0.15"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -133,6 +133,176 @@
               }
             }
           }                 
+        } 
+        ,"options": {
+          "responses": {
+            "200": {
+              "description": "200 response",
+              "headers": {
+                "Access-Control-Expose-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Methods": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Credentials": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Max-Age": {
+                  "schema": {
+                    "type": "string"
+                  }
+                },
+                "Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }            
+              ,"content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Empty"
+                  }
+                }
+              }
+            }
+          }
+        }    
+      }
+      ,"/Asset/Project/{tag}/{project_id}/{email}/{page_number}/{page_size}": {
+        "get": {
+          "tags": [
+            "Asset"
+          ],
+          "summary": "Retorna la lista de assets para un proyecto dado, con paginación",
+          "parameters": [
+            {
+              "in": "path",
+              "name": "tag",
+              "required": true,
+              "description": "tag",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }            
+            ,{
+              "in": "path",
+              "name": "project_id",
+              "required": true,
+              "description": "project_id",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "email",
+              "required": true,
+              "description": "email",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "page_number",
+              "required": true,
+              "description": "page_number",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+            ,{
+              "in": "path",
+              "name": "page_size",
+              "required": true,
+              "description": "page_size",
+              "schema": {
+                "$ref": "#/components/schemas/id"
+              }
+            }
+          ]
+          ,"responses": {
+            "200": {
+              "description": "OK, Assets response"
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+              ,"content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/assetspaginated"
+                  }
+                }
+              }
+            }
+            ,"204": {
+              "description": "No Asset response."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }        
+            ,"400": {
+              "description": "Failed. Misunderstood Request."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+            ,"404": {
+              "description": "Failed. Asset request not found."
+              ,"headers": {
+                "Access-Control-Allow-Origin": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+                ,"Access-Control-Allow-Headers": {
+                  "schema": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }                   
         } 
         ,"options": {
           "responses": {
@@ -1065,6 +1235,15 @@
               ,"format" : "date-time"                                 
               ,"description": "MEDIA_MOD" 
             }                                                    
+            ,"DURATION" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "DURATION" 
+            }
+            ,"DURATION_TC" : {
+              "type" : "string"                                 
+              ,"description": "DURATION_TC" 
+            }  
             ,"ID_EXT_MEDIA_TYPE" : {
               "type" : "integer"             
               ,"format" : "int32"             
@@ -1187,7 +1366,16 @@
               "type" : "string"
               ,"format" : "date-time"                                 
               ,"description": "MEDIA_MOD" 
-            }                                                    
+            }   
+            ,"DURATION" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "DURATION" 
+            } 
+            ,"DURATION_TC" : {
+              "type" : "string"                                 
+              ,"description": "DURATION_TC" 
+            }                                                
             ,"ID_EXT_MEDIA_TYPE" : {
               "type" : "integer"             
               ,"format" : "int32"             
@@ -1352,6 +1540,33 @@
             }            
           }
         }       
+        ,"assetspaginated": {
+          "type": "object"     
+          ,"properties" : {
+            "page_number" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "page_number" 
+            }
+            ,"page_size" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "page_size" 
+            }
+            ,"count" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "page_total" 
+            }
+            ,"assets" : {
+              "type" : "array"
+              ,"items" : {
+                "$ref": "#/components/schemas/asset" 
+              }   
+              ,"description": "lista de assets" 
+            }
+          }         
+        } 
         ,"assets": {
           "type": "object"     
           ,"additionalProperties" : {
@@ -1360,7 +1575,7 @@
               "$ref": "#/components/schemas/asset" 
             }                 
           }
-        }      
+        }         
         ,"asset": {
           "properties": {
             "uuid": {
@@ -1389,8 +1604,8 @@
               ,"description": "mensaje de error"    
             }
           }
-        }
-      }     
+      }
+      }      
     }
   }
   

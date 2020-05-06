@@ -112,10 +112,8 @@ class Database:
         self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
         self.cur = self.con.cursor()
     
-
     def Disconnect(self):        
         self.con.close()
-
 
     def ConsultaAssetListByProjectId(self, _id, _email):        
         self.cur.execute("""SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID 
@@ -134,6 +132,56 @@ class Database:
             result.append(row['ASSET_ID'])
         self.cur.close()
         return result   
+
+    def ConsultaAssetListByProjectIdPaginatedTotal(self, _id, _email):                         
+        self.cur.execute("""SELECT COUNT(PROJECT_ASSET.ASSET_ID) AS TOTAL
+        FROM PROJECT_ASSET
+        JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID 
+        JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+        JOIN GROUPUSER_USERS ON NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
+        JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID
+        WHERE EXT_MEDIA.ID IS NOT NULL 
+        AND PROJECT_ASSET.PROJECT_ID = %s
+        AND USERS.E_CORREO = %s""", (_id, _email))
+        #results = self.cur.fetchall()  --> usamos mejor el cursor
+        result = []
+        for row in self.cur:
+            result.append(row['TOTAL'])       
+        return result   
+
+    def ConsultaAssetListByProjectIdPaginated(self, _id, _email, _page_number, _page_size):     
+        _inicio = int(_page_number) * int(_page_size)        
+
+        _total = self.ConsultaAssetListByProjectIdPaginatedTotal(_id, _email)
+
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('ConsultaAssetListByProjectIdPaginated - ConsultaAssetListByProjectIdPaginatedTotal - _total: ', str(_total)), self.funciones._INFO)    
+
+        consulta = '{}{}{}{}'.format("""SELECT PROJECT_ASSET.ASSET_ID AS ASSET_ID 
+        FROM PROJECT_ASSET
+        JOIN EXT_MEDIA ON EXT_MEDIA.ASSET_ID=PROJECT_ASSET.ASSET_ID 
+        JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+        JOIN GROUPUSER_USERS ON NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
+        JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID
+        WHERE EXT_MEDIA.ID IS NOT NULL 
+        AND PROJECT_ASSET.PROJECT_ID = %s
+        AND USERS.E_CORREO = %s
+        ORDER BY PROJECT_ASSET.FECHA_CRE DESC LIMIT """,_inicio,',',_page_size)
+        #self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('ConsultaAssetListByProjectIdPaginated - consulta: ', consulta), self.funciones._INFO)    
+        self.cur.execute(consulta, (_id, _email))
+        #results = self.cur.fetchall()  --> usamos mejor el cursor
+        result = []
+        for row in self.cur:
+            result.append(row['ASSET_ID'])
+        self.cur.close()
+        
+        resultado = {
+            "page_number": _page_number
+            , "page_size": _page_size
+            , "count": _total[0]                  
+            , "assets": result                 
+        }
+
+        return resultado   
 
     def ConsultaExtMediaByAssetId(self,_id,_email):        
         self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ID,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE,
@@ -1313,6 +1361,15 @@ class Metodos:
         db = Database()   
         db.Connect_pymysql()       
         asss = db.ConsultaAssetListByProjectId(_id,_email)  
+        db.Disconnect()              
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetAssetListByProjectId - assets: ', str(asss)), self.funciones._INFO)    
+        return asss
+
+    def funcion_GetAssetListByProjectIdPaginated(self,_id, _email, _page_number, _page_size):        
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}{}{}{}{}'.format('INICIO funcion_GetAssetListByProjectIdPaginated - _id: ', _id,' - _email:',_email,' - _page_number:',_page_number,' - _page_size:',_page_size), self.funciones._INFO)  
+        db = Database()   
+        db.Connect_pymysql()         
+        asss = db.ConsultaAssetListByProjectIdPaginated(_id, _email, _page_number, _page_size)
         db.Disconnect()              
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetAssetListByProjectId - assets: ', str(asss)), self.funciones._INFO)    
         return asss

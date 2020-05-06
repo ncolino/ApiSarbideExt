@@ -55,6 +55,30 @@ def GetAssetListByProjectId(tag,project_id,email):
     #return jsonify(res)
     
 
+@REQUEST_API.route('/Asset/Project/<string:tag>/<string:project_id>/<string:email>/<string:page_number>/<string:page_size>', methods=['GET'])
+def GetAssetListByProjectIdPaginated(tag,project_id,email,page_number,page_size):
+    """Retorna la lista de assets para un proyecto dado
+    @param tag: the id    
+    @param project_id: the id
+    @param email: email del user
+    @param page_number: page_number
+    @param page_size: page_size
+    @return: 200: a ASSET_REQUESTS as a flask/response object \
+    with application/json mimetype.
+    @raise 404: if asset not found
+    """
+    fn = Metodos() 
+    res = fn.funcion_GetAssetListByProjectIdPaginated(project_id,email,page_number,page_size)   
+    if len(res) == 0:
+       #abort(404)
+       return '', 204
+
+    resp = jsonify(res)
+    resp.set_etag(generate_etag(json.dumps(res).encode()))
+    return resp
+    #return jsonify(res)
+    
+
 
 @REQUEST_API.route('/ExtMedia/Asset/<string:tag>/<string:asset_id>/<string:email>', methods=['GET'])
 def GetExtMediaByAssetId(tag,asset_id,email):
