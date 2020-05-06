@@ -435,7 +435,9 @@ class Database:
             row['SCRIPT_DESCRIPTION'] = self.funciones.FiltrarCaracteres(row['SCRIPT_DESCRIPTION']) 
             row['REMARKS'] = self.funciones.FiltrarCaracteres(row['REMARKS']) 
             row['OFF'] = self.funciones.FiltrarCaracteres(row['OFF']) 
-            row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])        
+            row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])      
+
+            row['DURATION_TC']  = self.funciones.FramesToTC(row['DURATION'])   
 
             if _extended:
                 new_row = {
@@ -452,6 +454,7 @@ class Database:
                     , "C2": row['C2']
                     , "TITLE_10": row['TITLE_10']
                     , "DURATION": row['DURATION']
+                    , "DURATION_TC": row['DURATION_TC']
                     , "SCRIPT_DESCRIPTION": row['SCRIPT_DESCRIPTION']
                     , "REMARKS": row['REMARKS']
                     , "NESCALETA": row['NESCALETA']
@@ -481,7 +484,8 @@ class Database:
                     , "ASSET_ID": row['ASSET_ID']
                     , "ASSET_VALUE": row['ASSET_VALUE']                   
                     , "TITLE_10": row['TITLE_10']
-                    , "DURATION": row['DURATION']                    
+                    , "DURATION": row['DURATION']  
+                    , "DURATION_TC": row['DURATION_TC']                  
                     , "EXT_MEDIA_TYPE": ext_media_type
                     , "HLS_RENDITION_URL": ""
                     , "MP4PMD_URL": ""
