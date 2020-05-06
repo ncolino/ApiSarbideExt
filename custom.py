@@ -44,6 +44,19 @@ class Funciones:
             _cadena = ""
         return _cadena
 
+    def FramesToTC(self, _frame_number):
+        
+        ifps = 25
+        frs = _frame_number % ifps
+        secs = (_frame_number // ifps) % 60
+        mins = ((_frame_number // ifps) // 60) % 60
+        hrs = (((_frame_number // ifps) // 60) // 60)
+        
+        #return "{hh:02d}:{mm:02d}:{ss:06.3f}".format(hh=hrs, mm=mins, ss=secs + frs)  # --> formato 00:00:00.000 
+        return "{hh:02d}:{mm:02d}:{ss:02d}:{ff:02d}".format(hh=hrs, mm=mins, ss=secs, ff=frs) # --> formato 00:00:00:00 
+
+
+
     def EscribeLog(self, _nombre_fichero_log, _mensaje, _log_level):
         ahora = datetime.now()
         _filename = "./logs/" + _nombre_fichero_log + "_" + ahora.strftime("%Y%m%d") + ".log"
@@ -150,6 +163,7 @@ class Database:
             row['OFF'] = self.funciones.FiltrarCaracteres(row['OFF']) 
             row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])             
             #result.append(row)
+            row['DURATION_TC'] = self.funciones.FramesToTC(row['DURATION']) 
             result = row
             break
         self.cur.close()
@@ -194,6 +208,8 @@ class Database:
             _off = self.funciones.FiltrarCaracteres(_off) 
             _synopsis_sar = self.funciones.FiltrarCaracteres(_synopsis_sar)    
 
+            _duration_tc = self.funciones.FramesToTC(_duration) 
+
             if _extended:
                 new_row = {
                     "ID_EXT_MEDIA": _id_ext_media
@@ -209,6 +225,7 @@ class Database:
                     , "C2": _c2
                     , "TITLE_10": _title_10
                     , "DURATION": _duration
+                    , "DURATION_TC": _duration_tc
                     , "SCRIPT_DESCRIPTION": _script_description
                     , "REMARKS": _remarks
                     , "NESCALETA": _nescaleta
@@ -237,7 +254,8 @@ class Database:
                     , "ASSET_ID": _asset_id
                     , "ASSET_VALUE": _asset_value              
                     , "TITLE_10": _title_10
-                    , "DURATION": _duration                  
+                    , "DURATION": _duration  
+                    , "DURATION_TC": _duration_tc                
                     , "EXT_MEDIA_TYPE": ext_media_type
                     , "HLS_RENDITION_URL": ""
                     , "MP4PMD_URL": ""

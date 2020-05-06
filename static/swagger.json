@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.13"
+      ,"version": "1.0.14"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -1107,6 +1107,15 @@
               ,"format" : "date-time"                                 
               ,"description": "MEDIA_MOD" 
             }                                                    
+            ,"DURATION" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "DURATION" 
+            }
+            ,"DURATION_TC" : {
+              "type" : "string"                                 
+              ,"description": "DURATION_TC" 
+            }  
             ,"ID_EXT_MEDIA_TYPE" : {
               "type" : "integer"             
               ,"format" : "int32"             
@@ -1229,7 +1238,16 @@
               "type" : "string"
               ,"format" : "date-time"                                 
               ,"description": "MEDIA_MOD" 
-            }                                                    
+            }   
+            ,"DURATION" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "DURATION" 
+            } 
+            ,"DURATION_TC" : {
+              "type" : "string"                                 
+              ,"description": "DURATION_TC" 
+            }                                                
             ,"ID_EXT_MEDIA_TYPE" : {
               "type" : "integer"             
               ,"format" : "int32"             
