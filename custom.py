@@ -175,8 +175,8 @@ class Database:
         self.cur.close()
         
         resultado = {
-            "page_number": _page_number
-            , "page_size": _page_size
+            "page_number": int(_page_number)
+            , "page_size": int(_page_size)
             , "count": _total[0]                  
             , "assets": result                 
         }
