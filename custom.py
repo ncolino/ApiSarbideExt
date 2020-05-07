@@ -90,7 +90,7 @@ class Database:
         db = settings.MYSQL_DATABASE_DB
 
         try:
-            self.con = mysql.connector.connect(user=user, password=password, host=host, database=db, autocommit =True, raise_on_warnings=True,pool_name = "mypool", pool_size = 20)
+            self.con = mysql.connector.connect(user=user, password=password, host=host, database=db, autocommit =True, raise_on_warnings=True, pool_name = settings.MYSQL_POOL_NAME, pool_size = settings.MYSQL_POOL_SIZE)
             self.cur = self.con.cursor()
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
@@ -1386,8 +1386,8 @@ class Metodos:
     def funcion_GetExtMediaFullByAssetId(self,_id,_email,_extended):
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id, ' - _email:', _email, ' - extended:', _extended), self.funciones._INFO)          
         db = Database()  
-        db.Connect_pymysql()
-        asss = db.ConsultaExtMediaFullByAssetId_pymysql(_id,_email,_extended)        
+        db.Connect_mysql()
+        asss = db.ConsultaExtMediaFullByAssetId_mysql(_id,_email,_extended)        
         db.Disconnect()
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss

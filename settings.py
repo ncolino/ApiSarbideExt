@@ -10,4 +10,5 @@ MYSQL_DATABASE_USER = 'sarbide'
 MYSQL_DATABASE_PASSWORD = 'sarbide'
 MYSQL_DATABASE_DB = 'sarbide'
 MYSQL_DATABASE_HOST = 'database-1.cnewyb94s8sb.eu-west-1.rds.amazonaws.com'
-
+MYSQL_POOL_SIZE = 30
+MYSQL_POOL_NAME = 'mypool'
