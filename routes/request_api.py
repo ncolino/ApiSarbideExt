@@ -12,10 +12,13 @@ from validate_email import validate_email
 
 import settings
 
+
 REQUEST_API = Blueprint('request_api', __name__)
 
+
+
 def get_blueprint():
-    """Return the blueprint for the main app module"""
+    """Return the blueprint for the main app module"""  
     return REQUEST_API
 
 def generate_etag(data):  #data debe ser un string y estar hay que hacerle .encode()

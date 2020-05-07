@@ -2,12 +2,12 @@ import settings
 import pymysql
 from datetime import datetime
 
-
 import mysql.connector
 from mysql.connector import errorcode
 
-
 import logging
+
+import time
 
 
 #Ejemplos de uso:
@@ -83,34 +83,33 @@ class Database:
         #self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
         #self.cur = self.con.cursor()
 
-    def Connect_mysql(self):
+    def GlobalConnect_mysql(self):
         host = settings.MYSQL_DATABASE_HOST
         user = settings.MYSQL_DATABASE_USER
         password = settings.MYSQL_DATABASE_PASSWORD
         db = settings.MYSQL_DATABASE_DB
+        
+        self.con = mysql.connector.connect(user=user, password=password, host=host, database=db, autocommit =True, raise_on_warnings=True, pool_name = settings.MYSQL_POOL_NAME, pool_size = settings.MYSQL_POOL_SIZE)                
 
-        try:
-            self.con = mysql.connector.connect(user=user, password=password, host=host, database=db, autocommit =True, raise_on_warnings=True, pool_name = settings.MYSQL_POOL_NAME, pool_size = settings.MYSQL_POOL_SIZE)
-            self.cur = self.con.cursor()
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
-            else:
-                print(err)
+    def Connect_mysql(self):        
+        
+        self.con = mysql.connector.connect(pool_name = settings.MYSQL_POOL_NAME, pool_size = settings.MYSQL_POOL_SIZE)
+        self.cur = self.con.cursor()
             
-
-        #self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
-        #self.cur = self.con.cursor()
 
     def Connect_pymysql(self):
         host = settings.MYSQL_DATABASE_HOST
         user = settings.MYSQL_DATABASE_USER
         password = settings.MYSQL_DATABASE_PASSWORD
         db = settings.MYSQL_DATABASE_DB
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
-        self.cur = self.con.cursor()
+        try:
+            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
+        except pymysql.Error as e:   
+            self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('ERROR Connect_pymysql - error: ', e.args[0],' - error:',e.args[1]), self.funciones._INFO)  
+            time.sleep(1)
+            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
+        finally:
+            self.cur = self.con.cursor()
     
     def Disconnect(self):        
         self.con.close()
@@ -700,7 +699,283 @@ class Database:
                        
         return result    
 
-   
+    def ConsultaExtMediaFullByAssetId_mysqlx(self,_id,_email,_extended):     
+        
+        session = self.conx.get_session()
+        res = session.sql("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE
+			,EXT_MEDIA.FORMATO1_ID AS F1_ID,EXT_MEDIA.FORMATO2_ID AS F2_ID,CONTENIDO1.CONTENIDO1_EUS AS C1,CONTENIDO2.CONTENIDO2_EUS AS C2,FORMATO1.FORMATO1_EUS AS F1,FORMATO2.FORMATO2_EUS AS F2
+            ,EXT_MEDIA.CONTENIDO1_ID AS C1_ID,EXT_MEDIA.CONTENIDO2_ID AS C2_ID
+            ,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,EXT_MEDIA.REMARKS,EXT_MEDIA.NESCALETA,EXT_MEDIA.NNOTICIA,EXT_MEDIA.ANYO_ESC,EXT_MEDIA.NOMBRE_PROG,EXT_MEDIA.OFF,EXT_MEDIA.SYNOPSIS_SAR,EXT_MEDIA.PRODUCT_CODE			
+            ,EXT_MEDIA.CHAPTER,EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,EXT_MEDIA.ID_EXT_MEDIA_TYPE			            
+			FROM EXT_MEDIA 			
+            LEFT JOIN FORMATO2 ON (EXT_MEDIA.FORMATO1_ID=FORMATO2.FORMATO1_ID AND EXT_MEDIA.FORMATO2_ID=FORMATO2.FORMATO2_ID) 
+            LEFT JOIN FORMATO1 ON EXT_MEDIA.FORMATO1_ID=FORMATO1.FORMATO1_ID 
+            LEFT JOIN CONTENIDO2 ON (EXT_MEDIA.CONTENIDO1_ID=CONTENIDO2.CONTENIDO1_ID AND EXT_MEDIA.CONTENIDO2_ID=CONTENIDO2.CONTENIDO2_ID) 
+            LEFT JOIN CONTENIDO1 ON EXT_MEDIA.CONTENIDO1_ID=CONTENIDO1.CONTENIDO1_ID
+            WHERE EXT_MEDIA.ID is not null            
+			AND EXT_MEDIA.ASSET_ID = :ASSET_ID
+            AND EXT_MEDIA.ASSET_ID IN (
+				SELECT ASSET_ID FROM PROJECT_ASSET
+				INNER JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+				INNER JOIN GROUPUSER_USERS ON GROUPUSER_USERS.GROUP_USER_ID = NODE_GROUPUSER_MEDIA.GROUP_USER_ID
+				INNER JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID			
+				WHERE USERS.E_CORREO = 'remon_amaya@eitb.eus'         
+            ) LIMIT 1""").bind('ASSET_ID', _id).execute().fetch_all()
+
+        self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}{}{}'.format('ConsultaExtMediaFullByAssetId_mysqlx - _id: ', _id,' - _email:',_email,' - res:',str(res)), self.funciones._INFO)          
+
+
+        self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE
+			,EXT_MEDIA.FORMATO1_ID AS F1_ID,EXT_MEDIA.FORMATO2_ID AS F2_ID,CONTENIDO1.CONTENIDO1_EUS AS C1,CONTENIDO2.CONTENIDO2_EUS AS C2,FORMATO1.FORMATO1_EUS AS F1,FORMATO2.FORMATO2_EUS AS F2
+            ,EXT_MEDIA.CONTENIDO1_ID AS C1_ID,EXT_MEDIA.CONTENIDO2_ID AS C2_ID
+            ,EXT_MEDIA.TITLE_10,EXT_MEDIA.DURATION,EXT_MEDIA.SCRIPT_DESCRIPTION,EXT_MEDIA.REMARKS,EXT_MEDIA.NESCALETA,EXT_MEDIA.NNOTICIA,EXT_MEDIA.ANYO_ESC,EXT_MEDIA.NOMBRE_PROG,EXT_MEDIA.OFF,EXT_MEDIA.SYNOPSIS_SAR,EXT_MEDIA.PRODUCT_CODE			
+            ,EXT_MEDIA.CHAPTER,EXT_MEDIA.MEDIA_UTI_CRE,EXT_MEDIA.MEDIA_UTI_MOD,DATE_FORMAT(EXT_MEDIA.MEDIA_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_CRE,DATE_FORMAT(EXT_MEDIA.MEDIA_MOD, '%%Y-%%m-%%d %%H:%%i:%%s') AS MEDIA_MOD,EXT_MEDIA.ID_EXT_MEDIA_TYPE			            
+			FROM EXT_MEDIA 			
+            LEFT JOIN FORMATO2 ON (EXT_MEDIA.FORMATO1_ID=FORMATO2.FORMATO1_ID AND EXT_MEDIA.FORMATO2_ID=FORMATO2.FORMATO2_ID) 
+            LEFT JOIN FORMATO1 ON EXT_MEDIA.FORMATO1_ID=FORMATO1.FORMATO1_ID 
+            LEFT JOIN CONTENIDO2 ON (EXT_MEDIA.CONTENIDO1_ID=CONTENIDO2.CONTENIDO1_ID AND EXT_MEDIA.CONTENIDO2_ID=CONTENIDO2.CONTENIDO2_ID) 
+            LEFT JOIN CONTENIDO1 ON EXT_MEDIA.CONTENIDO1_ID=CONTENIDO1.CONTENIDO1_ID
+            WHERE EXT_MEDIA.ID is not null            
+			AND EXT_MEDIA.ASSET_ID = %s
+            AND EXT_MEDIA.ASSET_ID IN (
+				SELECT ASSET_ID FROM PROJECT_ASSET
+				INNER JOIN NODE_GROUPUSER_MEDIA ON NODE_GROUPUSER_MEDIA.PROJECT_ID = PROJECT_ASSET.PROJECT_ID
+				INNER JOIN GROUPUSER_USERS ON GROUPUSER_USERS.GROUP_USER_ID = NODE_GROUPUSER_MEDIA.GROUP_USER_ID
+				INNER JOIN USERS ON USERS.USER_ID = GROUPUSER_USERS.USER_ID			
+				WHERE USERS.E_CORREO = %s         
+            ) LIMIT 1""", (_id, _email))
+                   
+        result = []
+        for row in self.cur:                                         
+            ext_media_type = "VIDEO"
+            if row['ID_EXT_MEDIA_TYPE'] == 2:
+                ext_media_type = "AUDIO"
+            if row['ID_EXT_MEDIA_TYPE'] == 3:
+                ext_media_type = "IMAGEN"
+                       
+
+            row['TITLE_10'] = self.funciones.FiltrarCaracteres(row['TITLE_10']) 
+            row['SCRIPT_DESCRIPTION'] = self.funciones.FiltrarCaracteres(row['SCRIPT_DESCRIPTION']) 
+            row['REMARKS'] = self.funciones.FiltrarCaracteres(row['REMARKS']) 
+            row['OFF'] = self.funciones.FiltrarCaracteres(row['OFF']) 
+            row['SYNOPSIS_SAR'] = self.funciones.FiltrarCaracteres(row['SYNOPSIS_SAR'])      
+
+            row['DURATION_TC']  = self.funciones.FramesToTC(row['DURATION'])   
+
+            if _extended:
+                new_row = {
+                    "ID_EXT_MEDIA": row['ID_EXT_MEDIA']
+                    , "ASSET_ID": row['ASSET_ID']
+                    , "ASSET_VALUE": row['ASSET_VALUE']
+                    , "F1_ID": row['F1_ID']
+                    , "F2_ID": row['F2_ID']
+                    , "C1_ID": row['C1_ID']
+                    , "C2_ID": row['C2_ID']
+                    , "F1": row['F1']
+                    , "F2": row['F2']
+                    , "C1": row['C1']
+                    , "C2": row['C2']
+                    , "TITLE_10": row['TITLE_10']
+                    , "DURATION": row['DURATION']
+                    , "DURATION_TC": row['DURATION_TC']
+                    , "SCRIPT_DESCRIPTION": row['SCRIPT_DESCRIPTION']
+                    , "REMARKS": row['REMARKS']
+                    , "NESCALETA": row['NESCALETA']
+                    , "NNOTICIA": row['NNOTICIA']
+                    , "ANYO_ESC": row['ANYO_ESC']
+                    , "NOMBRE_PROG": row['NOMBRE_PROG']
+                    , "OFF": row['OFF']
+                    , "SYNOPSIS_SAR": row['SYNOPSIS_SAR']
+                    , "PRODUCT_CODE": row['PRODUCT_CODE']
+                    , "CHAPTER": row['CHAPTER']
+                    , "MEDIA_CRE": row['MEDIA_CRE']
+                    , "MEDIA_MOD": row['MEDIA_MOD']
+                    , "ID_EXT_MEDIA_TYPE": row['ID_EXT_MEDIA_TYPE']
+                    , "EXT_MEDIA_TYPE": ext_media_type 
+                    , "HLS_RENDITION_URL": ""
+                    , "MP4PMD_URL": ""
+                    , "WEBMPMD_URL": ""
+                    , "THUMBNAIL_URL": ""
+                    , "STILL_URL": ""
+                    , "SPRITE_URL": ""            
+                }
+                #result.append(row)
+                result = new_row
+            else:
+                new_row = {
+                    "ID_EXT_MEDIA": row['ID_EXT_MEDIA']
+                    , "ASSET_ID": row['ASSET_ID']
+                    , "ASSET_VALUE": row['ASSET_VALUE']                   
+                    , "TITLE_10": row['TITLE_10']
+                    , "DURATION": row['DURATION']  
+                    , "DURATION_TC": row['DURATION_TC']                  
+                    , "EXT_MEDIA_TYPE": ext_media_type
+                    , "HLS_RENDITION_URL": ""
+                    , "MP4PMD_URL": ""
+                    , "WEBMPMD_URL": ""
+                    , "THUMBNAIL_URL": ""
+                    , "STILL_URL": ""
+                    , "SPRITE_URL": ""           
+                }
+                #result.append(row)
+                result = new_row
+            break
+
+        if len(result) == 0:
+            result = []    
+        else:                       
+            #rellenar url MP4 VOD URL
+            self.cur.execute("""SELECT PUB_CONFIG.MEDIA_VOD_URL AS MP43_MEDIA_VODURL,EXT_SUPPORT.PATH AS MP43_PATH,EXT_QUALITY.NAME AS MP43_FILENAMEEXT
+					FROM EXT_MEDIA, EXT_QUALITY, EXT_SUPPORT, EXT_SERVER, PUB_CONFIG
+					WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_QUALITY.ID_EXT_MEDIA
+                    AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+					AND EXT_SERVER.ID_EXT_SERVER = EXT_SUPPORT.ID_EXT_SERVER
+					AND EXT_SUPPORT.ID_EXT_SUPPORT = EXT_QUALITY.ID_EXT_SUPPORT
+                    AND EXT_MEDIA.ASSET_ID = %s
+					AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = %s		                    
+                    LIMIT 1""", (_id, 1))                            
+
+            for row in self.cur:  
+                _mp43_media_vodurl = row['MP43_MEDIA_VODURL']
+                _mp43_path = row['MP43_PATH']
+                _mp43_filenameext = row['MP43_FILENAMEEXT']                                     
+                
+                mp4_pmd_url = ""                         
+
+                if _mp43_media_vodurl:
+                    if _mp43_path:
+                        if _mp43_filenameext:
+                            mp4_pmd_url = _mp43_media_vodurl + _mp43_path + _mp43_filenameext
+                            mp4_pmd_url = mp4_pmd_url.replace("http://","https://")
+                
+                result['MP4PMD_URL'] = mp4_pmd_url     
+                break            
+            
+
+            #rellenar url WEBM URL            
+            self.cur.execute("""SELECT PUB_CONFIG.MEDIA_VOD_URL AS WEBM_MEDIA_VODURL,EXT_SUPPORT.PATH AS WEBM_PATH,EXT_QUALITY.NAME AS WEBM_FILENAMEEXT
+					FROM EXT_MEDIA, EXT_QUALITY, EXT_SUPPORT, EXT_SERVER, PUB_CONFIG
+					WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_QUALITY.ID_EXT_MEDIA
+                    AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+					AND EXT_SERVER.ID_EXT_SERVER = EXT_SUPPORT.ID_EXT_SERVER
+					AND EXT_SUPPORT.ID_EXT_SUPPORT = EXT_QUALITY.ID_EXT_SUPPORT
+                    AND EXT_MEDIA.ASSET_ID = %s
+					AND EXT_QUALITY.ID_EXT_QUALITY_TYPE = %s		                    
+                    LIMIT 1""", (_id, 2)) 
+                    
+            for row in self.cur:               
+                _webm_media_vodurl = row['WEBM_MEDIA_VODURL']
+                _webm_path = row['WEBM_PATH']
+                _webm_filenameext = row['WEBM_FILENAMEEXT']      
+                              
+                webm_url = ""               
+
+                if _webm_media_vodurl:
+                    if _webm_path:
+                        if _webm_filenameext:
+                            webm_url = _webm_media_vodurl + _webm_path + _webm_filenameext
+                            webm_url = webm_url.replace("http://","https://")
+                
+                result['WEBMPMD_URL'] = webm_url    
+                break   
+                   
+            #rellenar url WEBM URL           
+            self.cur.execute("""SELECT CMS_RENDITION.RENDITION_URL AS HLS_RENDITION_URL                      
+				    from  EXT_MEDIA, CMS_RENDITION, EXT_QUALITY_CMS_RENDITION              
+				    where EXT_MEDIA.ID_EXT_MEDIA = EXT_QUALITY_CMS_RENDITION.ID_EXT_MEDIA
+                    AND CMS_RENDITION.ID_CMS_RENDITION=EXT_QUALITY_CMS_RENDITION.ID_CMS_RENDITION
+                    AND EXT_MEDIA.ASSET_ID = %s
+				    AND CMS_RENDITION.ID_PUBLICATION_TYPE = %s                   		                    
+                    LIMIT 1""", (_id, 2))  
+                    
+            for row in self.cur:                                                            
+                result['HLS_RENDITION_URL'] = row['HLS_RENDITION_URL']      
+                break
+                        
+            #rellenar url THUMBNAIL URL            
+            self.cur.execute("""SELECT PUB_CONFIG.MEDIA_VOD_URL AS THUMBNAIL_MEDIA_VOD_URL,EXT_SUPPORT.PATH AS THUMBNAIL_PATH,EXT_IMAGE.NAME AS THUMBNAIL_NAME
+				FROM EXT_MEDIA, EXT_SUPPORT,EXT_SERVER, EXT_IMAGE, PUB_CONFIG
+				WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_IMAGE.ID_EXT_MEDIA
+                AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
+				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
+                AND EXT_MEDIA.ASSET_ID = %s
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s		                    
+                LIMIT 1""", (_id, 3)) 
+                    
+            for row in self.cur:                
+                _thumbnail_media_vod_url = row['THUMBNAIL_MEDIA_VOD_URL']
+                _thumbnail_path = row['THUMBNAIL_PATH']
+                _thumbnail_name = row['THUMBNAIL_NAME']     
+
+                thumbnail_url = ""               
+
+                if _thumbnail_media_vod_url:
+                    if _thumbnail_path:
+                        if _thumbnail_name:                      
+                            thumbnail_url = _thumbnail_media_vod_url + _thumbnail_path + _thumbnail_name
+                            thumbnail_url = thumbnail_url.replace("http://","https://")
+               
+                result['THUMBNAIL_URL'] = thumbnail_url     
+                break                       
+
+            #rellenar url STILL URL            
+            self.cur.execute("""SELECT PUB_CONFIG.MEDIA_VOD_URL AS STILL_MEDIA_VOD_URL,EXT_SUPPORT.PATH AS STILL_PATH,EXT_IMAGE.NAME AS STILL_NAME
+				FROM EXT_MEDIA, EXT_SUPPORT,EXT_SERVER, EXT_IMAGE, PUB_CONFIG
+				WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_IMAGE.ID_EXT_MEDIA
+                AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
+				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
+                AND EXT_MEDIA.ASSET_ID = %s
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s		                    
+                LIMIT 1""", (_id, 2))  
+                    
+            for row in self.cur:       
+                _still_media_vod_url = row['STILL_MEDIA_VOD_URL']
+                _still_path = row['STILL_PATH']
+                _still_name = row['STILL_NAME']                       
+               
+                still_url = ""               
+
+                if _still_media_vod_url:
+                    if _still_path:
+                        if _still_name:                      
+                            still_url = _still_media_vod_url + _still_path + _still_name
+                            still_url = still_url.replace("http://","https://")
+               
+                result['STILL_URL'] = still_url 
+                break                            
+
+            #rellenar url SPRITE URL            
+            self.cur.execute("""SELECT PUB_CONFIG.MEDIA_VOD_URL AS SPRITE_MEDIA_VOD_URL,EXT_SUPPORT.PATH AS SPRITE_PATH,EXT_IMAGE.NAME AS SPRITE_NAME
+				FROM EXT_MEDIA, EXT_SUPPORT,EXT_SERVER, EXT_IMAGE, PUB_CONFIG
+				WHERE EXT_MEDIA.ID_EXT_MEDIA = EXT_IMAGE.ID_EXT_MEDIA
+                AND PUB_CONFIG.ID_EXT_SERVER = EXT_SERVER.ID_EXT_SERVER
+				AND EXT_IMAGE.ID_EXT_SUPPORT= EXT_SUPPORT.ID_EXT_SUPPORT
+				AND EXT_SUPPORT.ID_EXT_SERVER=EXT_SERVER.ID_EXT_SERVER
+                AND EXT_MEDIA.ASSET_ID = %s
+				AND EXT_IMAGE.ID_EXT_IMAGE_TYPE = %s		                    
+                LIMIT 1""", (_id, 1)) 
+                    
+            for row in self.cur:                   
+                _sprite_media_vod_url = row['SPRITE_MEDIA_VOD_URL']
+                _sprite_path = row['SPRITE_PATH']
+                _sprite_name = row['SPRITE_NAME']                       
+                               
+                sprite_url = ""               
+
+                if _sprite_media_vod_url:
+                    if _sprite_path:
+                        if _sprite_name:                      
+                            sprite_url = _sprite_media_vod_url + _sprite_path + _sprite_name
+                            sprite_url = sprite_url.replace("http://","https://")           
+                
+                result['SPRITE_URL'] = sprite_url     
+                break                      
+                       
+        return result    
+
+
 
     def ConsultaExtMediaFullByAssetId_mysql_old(self,_id,_email,_extended):     
         #self.cur.execute("""SELECT distinct EXT_MEDIA.ID_EXT_MEDIA,EXT_MEDIA.ID,EXT_MEDIA.ASSET_ID,DATE_FORMAT(EXT_MEDIA.ASSET_VALUE, '%%Y-%%m-%%d %%H:%%i:%%s') AS ASSET_VALUE
@@ -1386,8 +1661,8 @@ class Metodos:
     def funcion_GetExtMediaFullByAssetId(self,_id,_email,_extended):
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}{}{}'.format('INICIO funcion_GetExtMediaFullByAssetId - _id: ', _id, ' - _email:', _email, ' - extended:', _extended), self.funciones._INFO)          
         db = Database()  
-        db.Connect_mysql()
-        asss = db.ConsultaExtMediaFullByAssetId_mysql(_id,_email,_extended)        
+        db.Connect_pymysql()
+        asss = db.ConsultaExtMediaFullByAssetId_pymysql(_id,_email,_extended)        
         db.Disconnect()
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
