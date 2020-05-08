@@ -102,14 +102,23 @@ class Database:
         user = settings.MYSQL_DATABASE_USER
         password = settings.MYSQL_DATABASE_PASSWORD
         db = settings.MYSQL_DATABASE_DB
-        try:
-            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
-        except pymysql.Error as e:   
-            self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('ERROR Connect_pymysql - error: ', e.args[0],' - error:',e.args[1]), self.funciones._INFO)  
-            time.sleep(1)
-            self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
-        finally:
-            self.cur = self.con.cursor()
+
+        n = 0
+        while True: 
+            n = n + 1
+            try:
+                self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.DictCursor)
+                self.cur = self.con.cursor()
+                break
+            except pymysql.Error as e:   
+                #self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}{}{}'.format('ERROR Connect_pymysql - error: ', e.args[0],' - error:',e.args[1]), self.funciones._INFO)  
+                time.sleep(0.05)
+   
+            if n > 100:
+                break
+
+
+        
     
     def Disconnect(self):        
         self.con.close()
