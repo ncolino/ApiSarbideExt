@@ -1595,7 +1595,7 @@ class Database:
     
 
     def ConsultaProjectListByUser(self,_email):        
-        self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01, DATE_FORMAT(NODE_GROUPUSER_MEDIA.NGM_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS FECHA_CRE
+        self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.TITLE_01, DATE_FORMAT(NODE_GROUPUSER_MEDIA.NGM_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS FECHA_CRE, USERS.USER_ID 
             FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS,GROUPUSER_FRAMEAPLICATION
             WHERE PROJECT.PROJECT_ID = NODE_GROUPUSER_MEDIA.PROJECT_ID
             AND NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
@@ -1609,6 +1609,7 @@ class Database:
             row['PROJECT_ID'] = row['PROJECT_ID'] 
             row['TITLE_01'] = self.funciones.FiltrarCaracteres(row['TITLE_01'])       
             row['FECHA_CRE'] = row['FECHA_CRE']       
+            row['USER_ID'] = row['USER_ID'] 
             result.append(row)    
         self.cur.close()        
         return result
