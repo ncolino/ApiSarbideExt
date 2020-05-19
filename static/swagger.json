@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.17"
+      ,"version": "1.0.18"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -1535,6 +1535,11 @@
               "type" : "integer"             
               ,"format" : "int32"             
               ,"description": "identificador del project" 
+            }
+            ,"PROJECT_TYPE_ID" : {
+              "type" : "integer"             
+              ,"format" : "int32"             
+              ,"description": "identificador del tipo de proyecto" 
             }
             ,"TITLE_01" : {
               "type" : "string"                                 
