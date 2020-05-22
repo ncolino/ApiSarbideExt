@@ -1594,15 +1594,15 @@ class Database:
 
     
 
-    def ConsultaProjectListByUser(self,_email):        
+    def ConsultaProjectListByUser(self, _frameAppid, _email):        
         self.cur.execute("""select PROJECT.PROJECT_ID, PROJECT.PROJECT_TYPE_ID, PROJECT.TITLE_01, DATE_FORMAT(NODE_GROUPUSER_MEDIA.NGM_CRE, '%%Y-%%m-%%d %%H:%%i:%%s') AS FECHA_CRE, USERS.USER_ID 
             FROM PROJECT,NODE_GROUPUSER_MEDIA,GROUPUSER_USERS,USERS,GROUPUSER_FRAMEAPLICATION
             WHERE PROJECT.PROJECT_ID = NODE_GROUPUSER_MEDIA.PROJECT_ID
             AND NODE_GROUPUSER_MEDIA.GROUP_USER_ID = GROUPUSER_USERS.GROUP_USER_ID
             AND GROUPUSER_USERS.USER_ID = USERS.USER_ID 
             AND GROUPUSER_USERS.GROUP_USER_ID = GROUPUSER_FRAMEAPLICATION.GROUP_USER_ID
-            AND GROUPUSER_FRAMEAPLICATION.FRAME_APLICATION_ID = 115
-            AND USERS.E_CORREO = %s ORDER BY FECHA_CRE DESC""", _email)
+            AND GROUPUSER_FRAMEAPLICATION.FRAME_APLICATION_ID = %s
+            AND USERS.E_CORREO = %s ORDER BY FECHA_CRE DESC""", (_frameAppid, _email))
         #results = self.cur.fetchall()  --> usamos mejor el cursor        
         result = []
         for row in self.cur:            
@@ -1678,11 +1678,11 @@ class Metodos:
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetExtMediaFullByAssetId - ext_media: ', str(asss)), self.funciones._INFO)  
         return asss
 
-    def funcion_GetProjectListByUser(self,_email):        
+    def funcion_GetProjectListByUser(self, _frameAppid, _email):        
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('INICIO funcion_GetProjectListByUser - _email: ', _email), self.funciones._INFO)  
         db = Database()  
         db.Connect_pymysql()
-        proys = db.ConsultaProjectListByUser(_email)    
+        proys = db.ConsultaProjectListByUser(_frameAppid, _email)    
         db.Disconnect()    
         self.funciones.EscribeLog(settings.LOG_FILENAME, '{}{}'.format('funcion_GetProjectListByUser - proys: ', str(proys)), self.funciones._INFO)    
         return proys
