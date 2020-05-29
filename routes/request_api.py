@@ -161,18 +161,18 @@ def GetExtMediasByProjectId(tag,project_id,email):
 
 
 
-@REQUEST_API.route('/Project/User/<string:tag>/<string:frameAppid>/<string:email>', methods=['GET'])
-def GetProjectListByUser(tag,frameAppid,email):
+@REQUEST_API.route('/Project/User/<string:tag>/<string:rightframeAppid>/<string:email>', methods=['GET'])
+def GetProjectListByUser(tag,rightframeAppid,email):
     """Lectura de todos los projects a los que tiene acceso un usuario
     @param tag: the id   
-    @param frameAppid: the id   
+    @param rightframeAppid: the id   
     @param email: email del user
     @return: 200: a PROJECT_REQUESTS as a flask/response object \
     with application/json mimetype.
     @raise 404: if extmedia not found
     """
     fn = Metodos() 
-    res = fn.funcion_GetProjectListByUser(frameAppid, email)   
+    res = fn.funcion_GetProjectListByUser(rightframeAppid, email)   
     if len(res) == 0:
        #abort(404)
        return '', 204           

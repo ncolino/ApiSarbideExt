@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.19"
+      ,"version": "1.0.20"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
@@ -807,7 +807,7 @@
           }
         }     
       }
-      ,"/Project/User/{tag}/{frameAppid}/{email}": {
+      ,"/Project/User/{tag}/{rightframeAppid}/{email}": {
         "get": {
           "tags": [
             "Project"
@@ -825,9 +825,9 @@
             }
             ,{
               "in": "path",
-              "name": "frameAppid",
+              "name": "rightframeAppid",
               "required": true,
-              "description": "identificador del frame_aplication",
+              "description": "identificador del right_frame_aplication",
               "schema": {
                 "$ref": "#/components/schemas/id"
               }

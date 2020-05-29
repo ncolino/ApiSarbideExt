@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
       "description": "Python Flask API with Swagger UI"
-      ,"version": "1.0.19"
+      ,"version": "1.0.20"
       ,"title": "ApiSarbideExt"      
     },
     "servers": [      
