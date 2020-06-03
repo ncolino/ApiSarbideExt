@@ -185,6 +185,7 @@ class Database:
         resultado = {
             "page_number": int(_page_number)
             , "page_size": int(_page_size)
+            , "project_id": int(_id)        
             , "count": _total[0]                  
             , "assets": result                 
         }
