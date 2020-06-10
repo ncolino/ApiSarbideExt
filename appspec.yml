@@ -1,12 +1,12 @@
 version: 0.0
 os: linux
 files:
-  - source: source
+  - source: .
     destination: /srv/www/ApiSarbideExt
   - source: config/nginx.conf
     destination: /etc/nginx/nginx.conf
 hooks:
   BeforeInstall:
-    - location: scripts/Renombra.sh    
+    - location: test/mueve.sh    
       timeout: 300
       runas: root
