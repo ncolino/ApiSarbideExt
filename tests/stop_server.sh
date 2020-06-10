@@ -1,3 +1,3 @@
 #!/bin/bash
 
-systemctl stop nginx
+/etc/init.d/nginx stop
