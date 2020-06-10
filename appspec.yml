@@ -5,7 +5,11 @@ files:
     destination: /srv/www/ApiSarbideExt
 hooks:
   BeforeInstall:
-    - location: tests/mueve.sh    
+    - location: tests/before.sh    
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: tests/after.sh
       timeout: 300
       runas: root
   ApplicationStart:
