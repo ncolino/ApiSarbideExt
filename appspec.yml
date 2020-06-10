@@ -7,6 +7,14 @@ files:
     destination: /etc/nginx/nginx.conf
 hooks:
   BeforeInstall:
-    - location: test/mueve.sh    
+    - location: tests/mueve.sh    
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: tests/start_server.sh
+      timeout: 300
+      runas: root
+  ApplicationStop:
+    - location: tests/stop_server.sh
       timeout: 300
       runas: root
