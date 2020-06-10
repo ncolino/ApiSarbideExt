@@ -3,8 +3,6 @@ os: linux
 files:
   - source: /
     destination: /srv/www/ApiSarbideExt
-  - source: config/nginx.conf
-    destination: /etc/nginx/nginx.conf
 hooks:
   BeforeInstall:
     - location: tests/mueve.sh    
