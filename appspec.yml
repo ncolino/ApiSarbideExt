@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /srv/www/ApiSarbideExt
+    destination: /var/www/ApiSarbideExt
 hooks:
   BeforeInstall:
     - location: tests/before.sh    
